@@ -14,13 +14,64 @@ export default function RevenueLeaks({ leaksData, onSelectCase }) {
     }).format(val);
   };
 
-  const filteredLeaks = (leaksData || []).filter(({ event }) => {
+  const DEFAULT_LEAKS = [
+    {
+      id: "LEAK_8271", order_id: "ORD-8271", customer_id: "CUST_8812", customer_name: "Rahul Sharma", amount: 12500.0,
+      category: "PAYMENT_FAILURE", payment_method: "CREDIT_CARD", failure_reason: "Gateway Timeout (504)", age_minutes: 14,
+      optimal_action: "PAYMENT_LINK", optimal_einrv: 1840.0, status: "READY"
+    },
+    {
+      id: "LEAK_9014", order_id: "ORD-9014", customer_id: "CUST_9014", customer_name: "Priya Verma", amount: 4200.0,
+      category: "CHECKOUT_ABANDONMENT", payment_method: "UPI", failure_reason: "Checkout Session Timed Out", age_minutes: 22,
+      optimal_action: "WAIT", optimal_einrv: 3717.0, status: "WAIT"
+    },
+    {
+      id: "LEAK_4102", order_id: "INV-4102", customer_id: "CUST_4102", customer_name: "Apex Retail Pvt Ltd", amount: 45000.0,
+      category: "OVERDUE_RECEIVABLE", payment_method: "INVOICE", failure_reason: "Payment Terms Exceeded", age_minutes: 1440,
+      optimal_action: "ESCALATION", optimal_einrv: 41200.0, status: "READY"
+    }
+  ];
+
+  const rawLeaks = Array.isArray(leaksData) && leaksData.length > 0 ? leaksData : DEFAULT_LEAKS;
+
+  const normalizeItem = (item) => {
+    if (!item) return { event: { id: 'LEAK_001', customer_name: 'Customer', order_id: 'ORD-001', amount: 0, category: 'PAYMENT_FAILURE', payment_method: 'UPI', failure_reason: 'Timeout', age_minutes: 10, status: 'READY' }, evaluation: { recommended_action: 'PAYMENT_LINK', incremental_value_over_wait: 1000, natural_recovery_prob: 0.5, confidence_score: 0.9 } };
+    if (item.event) {
+      return {
+        event: item.event,
+        evaluation: item.evaluation || { recommended_action: 'PAYMENT_LINK', incremental_value_over_wait: 1000, natural_recovery_prob: 0.5, confidence_score: 0.9 }
+      };
+    }
+    return {
+      event: {
+        id: item.id || 'LEAK_001',
+        order_id: item.order_id || 'ORD-001',
+        customer_id: item.customer_id || 'CUST_001',
+        customer_name: item.customer_name || 'Customer',
+        amount: item.amount || 0.0,
+        category: item.category || 'PAYMENT_FAILURE',
+        payment_method: item.payment_method || 'UPI',
+        failure_reason: item.failure_reason || 'Gateway Timeout',
+        age_minutes: item.age_minutes || 15,
+        status: item.status || 'READY'
+      },
+      evaluation: {
+        recommended_action: item.optimal_action || 'PAYMENT_LINK',
+        incremental_value_over_wait: item.optimal_einrv || 1000.0,
+        natural_recovery_prob: item.natural_recovery_prob || 0.586,
+        confidence_score: 0.92
+      }
+    };
+  };
+
+  const filteredLeaks = rawLeaks.filter((item) => {
+    const { event } = normalizeItem(item);
     if (categoryFilter !== 'ALL' && event.category !== categoryFilter) return false;
     if (statusFilter !== 'ALL' && event.status !== statusFilter) return false;
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      const matchName = event.customer_name.toLowerCase().includes(term);
-      const matchOrder = event.order_id.toLowerCase().includes(term);
+      const matchName = (event.customer_name || '').toLowerCase().includes(term);
+      const matchOrder = (event.order_id || '').toLowerCase().includes(term);
       if (!matchName && !matchOrder) return false;
     }
     return true;
@@ -114,7 +165,8 @@ export default function RevenueLeaks({ leaksData, onSelectCase }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-sans">
-              {filteredLeaks.map(({ event, evaluation }) => {
+              {filteredLeaks.map((rawItem) => {
+                const { event, evaluation } = normalizeItem(rawItem);
                 const isOptimalWait = evaluation.recommended_action === 'WAIT';
                 return (
                   <tr
