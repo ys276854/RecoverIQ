@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, ShieldCheck, ArrowRight, AlertCircle, CheckCircle2, Sparkles } from 'lucide-react';
 import { authService } from '../services/auth';
+import { setApiBaseUrl } from '../services/api';
 
 export default function Signup({ onSignupSuccess, onNavigateLogin }) {
   const [formData, setFormData] = useState({
@@ -144,9 +145,38 @@ export default function Signup({ onSignupSuccess, onNavigateLogin }) {
           </div>
 
           {error && (
-            <div className="p-3.5 bg-rose-950/80 border border-rose-800/80 rounded-lg text-rose-200 text-xs font-medium flex items-center gap-2 font-sans">
-              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
-              <span>{error}</span>
+            <div className="p-3.5 bg-rose-950/80 border border-rose-800/80 rounded-lg text-rose-200 text-xs font-medium flex flex-col gap-2 font-sans">
+              <div className="flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                <span className="flex-1">{error}</span>
+              </div>
+              {(error.includes('HTML') || error.includes('404') || error.includes('VITE_API_BASE_URL') || error.includes('JSON')) && (
+                <div className="pt-2 border-t border-rose-800/60 space-y-2 text-[11px]">
+                  <p className="text-amber-200 font-semibold">Enter your deployed Backend URL (Render / Railway):</p>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      id="signup_backend_url"
+                      placeholder="https://razorpay-revenue-leak-radar.onrender.com"
+                      className="flex-1 px-3 py-1.5 bg-slate-950 border border-slate-700 rounded text-white font-mono text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const val = document.getElementById('signup_backend_url')?.value;
+                        if (val) {
+                          setApiBaseUrl(val);
+                          setError('');
+                          alert('Backend URL saved to session! Click Create Account again.');
+                        }
+                      }}
+                      className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded font-bold text-xs shrink-0"
+                    >
+                      Save & Retry
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

@@ -1,5 +1,9 @@
 // Central API Client for LeakRadar Frontend
 export const getApiBaseUrl = () => {
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem('rzp_backend_url');
+    if (saved) return saved.endsWith('/') ? saved.slice(0, -1) : saved;
+  }
   const envUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '';
   if (envUrl) {
     return envUrl.endsWith('/') ? envUrl.slice(0, -1) : envUrl;
@@ -13,6 +17,17 @@ export const getApiBaseUrl = () => {
     }
   }
   return '';
+};
+
+export const setApiBaseUrl = (url) => {
+  if (typeof window !== 'undefined') {
+    if (!url) {
+      localStorage.removeItem('rzp_backend_url');
+    } else {
+      const clean = url.trim().endsWith('/') ? url.trim().slice(0, -1) : url.trim();
+      localStorage.setItem('rzp_backend_url', clean);
+    }
+  }
 };
 
 export async function apiFetch(endpoint, options = {}) {
@@ -33,7 +48,7 @@ export async function apiFetch(endpoint, options = {}) {
       const text = await res.text();
       if (!res.ok) {
         if (text.startsWith('<!DOCTYPE') || text.startsWith('<html') || text.includes('The page')) {
-          throw new Error(`API endpoint '${endpoint}' returned HTML (404/Route Not Found). If deployed on Vercel/Netlify, please set the VITE_API_BASE_URL environment variable to your backend URL (e.g. https://your-backend.onrender.com).`);
+          throw new Error(`API endpoint '${endpoint}' returned HTML (404/Route Not Found). Check your VITE_API_BASE_URL setting.`);
         }
         throw new Error(text || `HTTP Error ${res.status}`);
       }
