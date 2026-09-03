@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldCheck, CheckCircle2, AlertCircle, FileText, Download } from 'lucide-react';
+import { apiFetch } from '../services/api';
 
 export default function AuditTrail() {
   const [logs, setLogs] = useState([]);
@@ -17,8 +18,7 @@ export default function AuditTrail() {
     async function fetchAudit() {
       setLoading(true);
       try {
-        const res = await fetch('/api/audit');
-        const data = await res.json();
+        const data = await apiFetch('/api/audit');
         setLogs(data);
       } catch (e) {
         console.error("Error fetching audit logs:", e);

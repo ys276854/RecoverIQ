@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { User, DollarSign, Clock, ShieldCheck, CheckCircle2, AlertTriangle, ArrowLeft } from 'lucide-react';
+import { apiFetch } from '../services/api';
 
 export default function CustomerProfile({ customerId, onBack }) {
   const [profile, setProfile] = useState(null);
@@ -17,8 +18,7 @@ export default function CustomerProfile({ customerId, onBack }) {
     async function fetchCustomer() {
       setLoading(true);
       try {
-        const res = await fetch(`/api/customer/${customerId || 'CUST_8812'}`);
-        const data = await res.json();
+        const data = await apiFetch(`/api/customer/${customerId || 'CUST_8812'}`);
         setProfile(data);
       } catch (e) {
         console.error("Error fetching customer:", e);

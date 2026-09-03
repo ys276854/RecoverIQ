@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FlaskConical, TrendingUp, DollarSign, ShieldCheck, ArrowUpRight } from 'lucide-react';
+import { apiFetch } from '../services/api';
 
 export default function Experiments() {
   const [expData, setExpData] = useState(null);
@@ -15,8 +16,7 @@ export default function Experiments() {
   useEffect(() => {
     async function fetchExperiments() {
       try {
-        const res = await fetch('/api/experiments');
-        const data = await res.json();
+        const data = await apiFetch('/api/experiments');
         setExpData(data);
       } catch (e) {
         console.error("Error fetching experiments:", e);

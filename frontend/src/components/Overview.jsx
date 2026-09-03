@@ -4,6 +4,7 @@ import {
   CheckCircle2, Clock, X, Info, ChevronRight, PauseCircle, Zap, Ban, MessageSquare, HelpCircle, FileText, Tag, RotateCcw,
   Code, Activity, Sliders, Play, Sparkles, Layers
 } from 'lucide-react';
+import { apiFetch } from '../services/api';
 
 export default function Overview({ overviewData, onNavigate, onSelectCase }) {
   const [showSavedModal, setShowSavedModal] = useState(false);
@@ -15,8 +16,7 @@ export default function Overview({ overviewData, onNavigate, onSelectCase }) {
   useEffect(() => {
     async function fetchLiveFeed() {
       try {
-        const res = await fetch('/api/decisions/live');
-        const data = await res.json();
+        const data = await apiFetch('/api/decisions/live');
         setLiveFeed(data);
       } catch (e) {
         console.error("Error fetching live feed:", e);

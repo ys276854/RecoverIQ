@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldCheck, Save, Sliders, CheckSquare, Square, AlertCircle, Clock } from 'lucide-react';
+import { apiFetch } from '../services/api';
 
 export default function Settings() {
   const [guardrails, setGuardrails] = useState({
@@ -18,8 +19,7 @@ export default function Settings() {
   useEffect(() => {
     async function fetchSettings() {
       try {
-        const res = await fetch('/api/guardrails');
-        const data = await res.json();
+        const data = await apiFetch('/api/guardrails');
         setGuardrails(data);
       } catch (e) {
         console.error("Error fetching guardrails:", e);
@@ -49,15 +49,13 @@ export default function Settings() {
         max_intervention_cost: Number(guardrails.max_intervention_cost) || 0,
         daily_budget_cap: Number(guardrails.daily_budget_cap) || 0,
       };
-      const res = await fetch('/api/guardrails/update', {
+      await apiFetch('/api/guardrails/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      if (res.ok) {
-        setSaved(true);
-        setTimeout(() => setSaved(false), 3000);
-      }
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
     } catch (e) {
       console.error("Error saving guardrails:", e);
     }

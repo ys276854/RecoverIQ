@@ -15,6 +15,7 @@ import Experiments from './components/Experiments';
 import Settings from './components/Settings';
 
 import { authService } from './services/auth';
+import { apiFetch } from './services/api';
 import { CheckCircle2, Zap, X, ShieldCheck, ExternalLink, ArrowRight } from 'lucide-react';
 
 export default function App() {
@@ -150,8 +151,7 @@ class ErrorBoundary extends React.Component {
   const handleSelectCase = async (caseId) => {
     setSelectedCaseId(caseId);
     try {
-      const caseRes = await fetch(`/api/case/${caseId}`);
-      const cData = await caseRes.json();
+      const cData = await apiFetch(`/api/case/${caseId}`);
       setCaseData(cData);
     } catch (e) {
       console.error("Error fetching case:", e);
@@ -176,12 +176,11 @@ class ErrorBoundary extends React.Component {
       }));
 
       try {
-        const res = await fetch('/api/action/execute', {
+        const data = await apiFetch('/api/action/execute', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ event_id: eventId, action: action })
         });
-        const data = await res.json();
 
         setTimeout(() => {
           setExecutionState(prev => ({
@@ -206,12 +205,11 @@ class ErrorBoundary extends React.Component {
 
   const handleTriggerDemo = async (type) => {
     try {
-      const res = await fetch('/api/demo/trigger', {
+      const data = await apiFetch('/api/demo/trigger', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type })
       });
-      const data = await res.json();
       if (data.message) {
         if (data.case_id) {
           handleSelectCase(data.case_id);
@@ -220,7 +218,7 @@ class ErrorBoundary extends React.Component {
         }
       }
     } catch (e) {
-      console.error("Demo trigger error:", e);
+      console.error("Error triggering demo:", e);
     }
   };
 

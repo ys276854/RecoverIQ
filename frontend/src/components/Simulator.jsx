@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Sliders, TrendingUp, DollarSign, ShieldCheck, ArrowRight, RefreshCw, Cpu, Activity, Sparkles, BarChart2 } from 'lucide-react';
+import { apiFetch } from '../services/api';
 
 export default function Simulator() {
   const [discountCap, setDiscountCap] = useState(500);
@@ -20,7 +21,7 @@ export default function Simulator() {
   const runSimulation = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/simulator/run', {
+      const data = await apiFetch('/api/simulator/run', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -31,7 +32,6 @@ export default function Simulator() {
           nudge_cost: nudgeCost
         })
       });
-      const data = await res.json();
       setSimResults(data);
     } catch (e) {
       console.error("Simulation error:", e);

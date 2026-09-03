@@ -4,6 +4,7 @@ import {
   ShieldCheck, AlertTriangle, ChevronRight, Menu, X, ArrowUpRight, LogOut, Bell, HelpCircle, UserCheck,
   PauseCircle, Ban, Tag, Moon, Sun, Info, CheckCircle2, Sparkles, MessageSquare, Cpu, Command, Radio, Terminal
 } from 'lucide-react';
+import { apiFetch } from '../../services/api';
 
 export default function AppShell({ 
   user, 
@@ -28,7 +29,7 @@ export default function AppShell({
   const handleSimulateWebhook = async () => {
     setWebhookSimulating(true);
     try {
-      const res = await fetch('/api/webhook/simulate', {
+      const data = await apiFetch('/api/webhook/simulate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -38,7 +39,6 @@ export default function AppShell({
           payment_method: "UPI"
         })
       });
-      const data = await res.json();
       setWebhookMessage(data.message);
       onReload();
       setTimeout(() => setWebhookMessage(''), 4000);

@@ -1,3 +1,5 @@
+import { apiFetch } from './api';
+
 const TOKEN_KEY = 'rzp_leak_radar_token';
 const USER_KEY = 'rzp_leak_radar_user';
 
@@ -29,15 +31,11 @@ export const authService = {
   },
 
   async login(email, password, remember = false) {
-    const res = await fetch('/api/auth/login', {
+    const data = await apiFetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password, remember_me: remember })
     });
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.detail || 'Authentication failed');
-    }
     this.setSession(data.token, data.user, remember);
     return data;
   },
@@ -47,22 +45,18 @@ export const authService = {
   },
 
   async signup(signupData) {
-    const res = await fetch('/api/auth/signup', {
+    const data = await apiFetch('/api/auth/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(signupData)
     });
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.detail || 'Account creation failed');
-    }
     this.setSession(data.token, data.user, true);
     return data;
   },
 
   async completeOnboarding(onboardingData) {
     const token = this.getToken();
-    const res = await fetch('/api/auth/onboarding', {
+    const data = await apiFetch('/api/auth/onboarding', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -70,10 +64,6 @@ export const authService = {
       },
       body: JSON.stringify(onboardingData)
     });
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.detail || 'Onboarding failed');
-    }
     const user = this.getUser() || {};
     user.onboarded = true;
     user.business_name = onboardingData.business_name;
@@ -85,17 +75,13 @@ export const authService = {
     const token = this.getToken();
     if (!token) return null;
     try {
-      const res = await fetch('/api/auth/me', {
+      const data = await apiFetch('/api/auth/me', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      if (!res.ok) {
-        this.clearSession();
-        return null;
-      }
-      const data = await res.json();
       this.setSession(token, data.user, true);
       return data.user;
     } catch (e) {
+      this.clearSession();
       return null;
     }
   },
@@ -104,7 +90,7 @@ export const authService = {
     const token = this.getToken();
     if (token) {
       try {
-        await fetch('/api/auth/logout', {
+        await apiFetch('/api/auth/logout', {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${token}` }
         });

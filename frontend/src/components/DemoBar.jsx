@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Play, RotateCcw, Zap, PauseCircle, Ban, Radio, Cpu, Terminal } from 'lucide-react';
+import { apiFetch } from '../services/api';
 
 export default function DemoBar({ onTriggerDemo, onReload }) {
   const [webhookSimulating, setWebhookSimulating] = useState(false);
@@ -8,7 +9,7 @@ export default function DemoBar({ onTriggerDemo, onReload }) {
   const handleSimulateWebhook = async () => {
     setWebhookSimulating(true);
     try {
-      const res = await fetch('/api/webhook/simulate', {
+      const data = await apiFetch('/api/webhook/simulate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -18,7 +19,6 @@ export default function DemoBar({ onTriggerDemo, onReload }) {
           payment_method: "UPI"
         })
       });
-      const data = await res.json();
       setWebhookMessage(data.message);
       onReload();
       setTimeout(() => setWebhookMessage(''), 4000);
