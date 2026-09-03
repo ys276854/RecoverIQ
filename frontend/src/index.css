@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Mulish', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #0f172a;
+    background-color: #f8fafc;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Mulish', sans-serif;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Monospace & Tabular Data Formatting */
+.num-tabular, .font-mono-tech {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.025em;
+}
+
+/* Modern subtle scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Official Razorpay Mulish Typography Classes */
+.typo-main-heading, .typo-page-title {
+  font-family: 'Mulish', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+}
+
+.typo-section-title {
+  font-family: 'Mulish', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #0f172a;
+}
+
+.typo-subtitle {
+  font-family: 'Mulish', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: #64748b;
+}
+
+.typo-form-label {
+  font-family: 'Mulish', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.typo-input-text {
+  font-family: 'Mulish', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.typo-helper-text {
+  font-family: 'Mulish', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #64748b;
+}
+
+.typo-nav-label {
+  font-family: 'Mulish', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.typo-table-header {
+  font-family: 'Mulish', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+}
+
+.typo-amount {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+}
+
+.typo-badge {
+  font-family: 'Mulish', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.btn-razorpay-primary {
+  font-family: 'Mulish', sans-serif;
+  background-color: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  border-radius: 0.5rem;
+  transition: all 0.15s ease-in-out;
+  box-shadow: 0 1px 2px 0 rgba(37, 99, 235, 0.2);
+}
+.btn-razorpay-primary:hover {
+  background-color: #1d4ed8;
+  box-shadow: 0 4px 12px 0 rgba(37, 99, 235, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-razorpay-outline {
+  font-family: 'Mulish', sans-serif;
+  border: 1.5px solid #2563eb;
+  color: #2563eb;
+  background-color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  border-radius: 0.5rem;
+  transition: all 0.15s ease-in-out;
+}
+.btn-razorpay-outline:hover {
+  background-color: #eff6ff;
+}
+
+.badge-emerald {
+  @apply bg-emerald-50 text-emerald-700 border border-emerald-200 typo-badge px-2.5 py-0.5 rounded-md;
+}
+
+.badge-amber {
+  @apply bg-amber-50 text-amber-800 border border-amber-200 typo-badge px-2.5 py-0.5 rounded-md;
+}
+
+.badge-blue {
+  @apply bg-blue-50 text-blue-800 border border-blue-200 typo-badge px-2.5 py-0.5 rounded-md;
+}
+
+.badge-rose {
+  @apply bg-rose-50 text-rose-800 border border-rose-200 typo-badge px-2.5 py-0.5 rounded-md;
+}
