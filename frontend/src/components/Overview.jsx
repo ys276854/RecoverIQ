@@ -25,15 +25,34 @@ export default function Overview({ overviewData, onNavigate, onSelectCase }) {
     fetchLiveFeed();
   }, []);
 
-  if (!overviewData) {
-    return <div className="p-8 text-center text-slate-500 font-mono">Loading revenue intelligence...</div>;
-  }
+  const DEFAULT_OVERVIEW = {
+    revenue_at_risk: 521400.0,
+    net_recovery_value: 182350.0,
+    natural_recovery_value: 305800.0,
+    unrecovered_residual: 33250.0,
+    saved_by_not_intervening: 18400.0,
+    organic_recovery_pct: 58.6,
+    agentic_recovery_pct: 35.0,
+    leak_count: 142,
+    recovered_count: 89,
+    roi_multiple: 14.2,
+    prevented_notification_costs: 14200.0,
+    prevented_discount_margin: 21931.0,
+    funnel_waterfall: {
+      at_risk: 521400.0,
+      natural_recovery: 305800.0,
+      agentic_net_recovery: 182350.0,
+      unrecovered_residual: 33250.0
+    }
+  };
 
-  const revenue_at_risk = overviewData?.revenue_at_risk ?? 520500.0;
-  const natural_recovery_value = overviewData?.natural_recovery_value ?? 305123.0;
-  const net_recovery_value = overviewData?.net_recovery_value ?? 182231.0;
-  const unrecovered_residual = overviewData?.unrecovered_residual ?? 33146.0;
-  const saved_by_not_intervening = overviewData?.saved_by_not_intervening ?? 18400.0;
+  const activeData = overviewData || DEFAULT_OVERVIEW;
+
+  const revenue_at_risk = activeData.revenue_at_risk;
+  const natural_recovery_value = activeData.natural_recovery_value;
+  const net_recovery_value = activeData.net_recovery_value;
+  const unrecovered_residual = activeData.unrecovered_residual || 33250.0;
+  const saved_by_not_intervening = activeData.saved_by_not_intervening || 18400.0;
 
   const funnel_waterfall = overviewData?.funnel_waterfall || {
     at_risk: 520500.0,

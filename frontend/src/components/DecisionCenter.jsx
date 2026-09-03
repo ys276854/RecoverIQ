@@ -4,11 +4,28 @@ import { ShieldCheck, CheckCircle2, AlertCircle, DollarSign, Clock, ArrowRight, 
 export default function DecisionCenter({ caseData, onExecuteAction, onSelectCustomer, onNavigate }) {
   const [activeStory, setActiveStory] = useState('current'); // 'current' or 'non_action'
 
-  if (!caseData) {
-    return <div className="p-8 text-center text-slate-500 font-mono">Select a revenue leak case to evaluate...</div>;
-  }
+  const DEFAULT_CASE = {
+    event: {
+      id: "LEAK_8271",
+      order_id: "ORD-8271",
+      customer_id: "CUST_8812",
+      customer_name: "Rahul Sharma",
+      amount: 12500.0,
+      failure_reason: "Gateway Timeout (504)",
+      age_minutes: 14
+    },
+    evaluation: {
+      natural_recovery_prob: 0.586,
+      actions_evaluated: [
+        { action: "PAYMENT_LINK", display_name: "Razorpay Payment Link", is_optimal: true, expected_net_value: 12611.0, recovery_probability: 0.88 },
+        { action: "WAIT", display_name: "WAIT (Organic)", is_optimal: false, expected_net_value: 11310.0, recovery_probability: 0.586 },
+        { action: "BLOCK", display_name: "Margin Discount Block", is_optimal: false, expected_net_value: 0.0, recovery_probability: 0.0 }
+      ]
+    }
+  };
 
-  const { event, evaluation } = caseData;
+  const activeCase = caseData || DEFAULT_CASE;
+  const { event, evaluation } = activeCase;
 
   const formatINR = (val) => {
     return new Intl.NumberFormat('en-IN', {
