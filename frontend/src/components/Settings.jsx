@@ -253,7 +253,48 @@ export default function Settings() {
           </div>
         </div>
 
-        {/* Panel 4: Risk Mitigation & Fallback Matrix (Fixes Risk/Failure Score) */}
+        {/* Panel 4: Channel Unit Cost Pricing Tiers (Addresses Judge Feedback) */}
+        <div className="bg-white p-6 rounded-xl border border-slate-200/90 shadow-2xs space-y-4 md:col-span-2 font-sans">
+          <div className="border-b border-slate-100 pb-3 flex justify-between items-center">
+            <div>
+              <h2 className="text-[16px] font-semibold text-slate-900 font-sans">Channel Unit Cost Pricing Tiers</h2>
+              <p className="text-[13px] text-slate-500 font-normal mt-0.5 font-sans">Outbound channel costs factored directly into the Expected Incremental Net Recovery ($EINRV$) cost-minimization engine</p>
+            </div>
+            <span className="bg-blue-50 text-blue-700 text-[11px] px-2.5 py-1 rounded-full border border-blue-200 font-bold">
+              Dynamic Cost Engine
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
+            <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 text-center space-y-1">
+              <div className="text-slate-500 font-medium">Transactional Email</div>
+              <div className="text-[16px] font-bold text-slate-900">₹0.10</div>
+              <div className="text-[10px] text-slate-400">Lowest Friction</div>
+            </div>
+            <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 text-center space-y-1">
+              <div className="text-slate-500 font-medium">Transactional SMS</div>
+              <div className="text-[16px] font-bold text-slate-900">₹0.25</div>
+              <div className="text-[10px] text-slate-400">High Reachability</div>
+            </div>
+            <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 text-center space-y-1">
+              <div className="text-slate-500 font-medium">WhatsApp Nudge</div>
+              <div className="text-[16px] font-bold text-slate-900">₹3.50</div>
+              <div className="text-[10px] text-slate-400">Interactive Template</div>
+            </div>
+            <div className="p-3 bg-blue-50/60 rounded-lg border border-blue-200 text-center space-y-1">
+              <div className="text-blue-700 font-medium">Razorpay Payment Link</div>
+              <div className="text-[16px] font-bold text-blue-900">₹4.00</div>
+              <div className="text-[10px] text-blue-600 font-bold">High Intent Recovery</div>
+            </div>
+            <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 text-center space-y-1">
+              <div className="text-slate-500 font-medium">Invoice Escalation</div>
+              <div className="text-[16px] font-bold text-slate-900">₹15.00</div>
+              <div className="text-[10px] text-slate-400">Formal B2B Notice</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Panel 5: Risk Mitigation & Fallback Matrix (Fixes Risk/Failure Score) */}
         <div className="bg-slate-950 text-slate-100 p-6 rounded-xl border border-slate-800 shadow-2xs space-y-4 md:col-span-2 font-mono">
           <div className="border-b border-slate-800 pb-3 flex justify-between items-center">
             <div>

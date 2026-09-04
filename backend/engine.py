@@ -12,12 +12,22 @@ class RevenueLeakEngine:
 
     DIRECT_COSTS = {
         "WAIT": 0.0,
-        "PAYMENT_LINK": 4.0,       # WhatsApp API / Direct Link dispatch cost
-        "REMINDER": 7.0,           # Multi-channel SMS/WhatsApp nudge
+        "EMAIL": 0.10,              # Transactional Email Notification
+        "SMS": 0.25,                # Transactional SMS Notification
+        "PAYMENT_LINK": 4.0,       # WhatsApp API Interactive Template / Payment Link
+        "REMINDER": 3.50,           # Multi-channel WhatsApp Nudge
         "DISCOUNT": 4.0,           # Notification cost (discount is in margin)
         "RETRY": 2.0,              # Gateway automated API retry fee
         "ESCALATION": 15.0         # Formal invoice escalation notification
     }
+
+    TERMINAL_FAILURE_CODES = [
+        "CARD_STOLEN",
+        "BAD_REQUEST_AUTHENTICATION_FAILURE",
+        "ACCOUNT_CLOSED",
+        "INVALID_CARD_NUMBER",
+        "FRAUD_BLOCKED"
+    ]
 
     ACTION_DISPLAY_NAMES = {
         "WAIT": "WAIT (Do Nothing)",
@@ -34,24 +44,36 @@ class RevenueLeakEngine:
     def estimate_natural_recovery(self, event: Dict[str, Any]) -> float:
         """
         Estimates baseline organic recovery probability P_nat(c) given zero intervention.
-        Features: customer successful tx count, LTV, average payment delay, payment method, attempt count.
+        Features: customer successful tx count, LTV, average payment delay, payment method, attempt count, failure reason code.
+        Cold-Start Handling: Uses category prior distribution when customer transaction history is sparse (succ_txs == 0).
+        Terminal Failures: Immediately returns 0.0 to trigger STOP recommendation.
         """
-        succ_txs = event.get("customer_succ_txs", 1)
+        reason = event.get("failure_reason", "")
+        if any(term in reason.upper() for term in self.TERMINAL_FAILURE_CODES):
+            return 0.0
+
+        succ_txs = event.get("customer_succ_txs", 0)
         avg_delay_hrs = event.get("customer_avg_delay_hours", 2.0)
         pm = event.get("payment_method", "CREDIT_CARD")
         attempts = event.get("attempt_count", 1)
         age_mins = event.get("age_minutes", 15)
+        category = event.get("category", "PAYMENT_FAILURE")
 
-        # Baseline log-odds
-        log_odds = 0.5
-
-        # Customer trust multiplier (repeat customers recover naturally)
-        if succ_txs >= 10:
-            log_odds += 0.8
-        elif succ_txs >= 5:
-            log_odds += 0.4
-        elif succ_txs == 0:
-            log_odds -= 0.5
+        # Baseline log-odds with Cold-Start Prior Adaptation
+        if succ_txs == 0:
+            # Cold-start population priors by category (Empirical Bayes shrinkage)
+            if category == "OVERDUE_RECEIVABLE":
+                log_odds = 0.2  # B2B invoices often settle naturally over days
+            elif category == "CHECKOUT_ABANDONMENT":
+                log_odds = 0.4  # Abandoned carts have moderate natural recovery
+            else:
+                log_odds = 0.0  # Cold-start payment failure baseline
+        else:
+            log_odds = 0.5
+            if succ_txs >= 10:
+                log_odds += 0.8
+            elif succ_txs >= 5:
+                log_odds += 0.4
 
         # Delay profile (customers with historical delay recover over hours naturally)
         if avg_delay_hrs < 4.0 and age_mins < 120:

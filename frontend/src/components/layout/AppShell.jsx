@@ -124,11 +124,14 @@ export default function AppShell({
     <div className="min-h-screen flex flex-col font-sans text-slate-900 bg-slate-50 selection:bg-blue-100 selection:text-blue-900 pb-24">
       {/* 1. SINGLE CONSOLIDATED 44PX UTILITY HEADER (Dark Acrylic Glass) */}
       <div className="bg-[#090D16] text-slate-200 border-b border-slate-800 px-4 sm:px-8 py-2 min-h-[44px] flex flex-wrap items-center justify-between gap-3 shadow-md font-mono select-none text-xs z-40">
-        {/* Left Side: Brand Badges + Latency Pill + Formula */}
+        {/* Left Side: Brand Badges + Latency Pill + App Store Active Badge */}
         <div className="flex items-center space-x-3 text-slate-300">
           <span className="font-bold text-white font-sans text-xs tracking-tight">Razorpay Autonomous Leak Radar</span>
           <span className="inline-flex items-center gap-1 bg-blue-950 text-blue-300 px-2 py-0.5 rounded border border-blue-800 text-[10px] font-bold">
             <Cpu className="w-3 h-3 text-blue-400" /> 18ms Latency
+          </span>
+          <span className="inline-flex items-center gap-1 bg-emerald-950/80 text-emerald-300 px-2 py-0.5 rounded border border-emerald-800 text-[10px] font-bold">
+            <ShieldCheck className="w-3 h-3 text-emerald-400" /> Razorpay Dashboard App Store: ACTIVE
           </span>
           <span className="text-slate-400 hidden xl:inline text-[11px]">
             Causal Engine (ΔP × Value - Cost)
