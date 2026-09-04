@@ -79,7 +79,22 @@ export default function DecisionCenter({ caseData, onExecuteAction, onSelectCust
               </div>
               <div className="flex justify-between items-baseline">
                 <div>
-                  <h2 className="text-sm font-medium text-slate-400 font-mono">Payment #{event.id} &bull; {event.customer_name}</h2>
+                  <h2 className="text-sm font-medium text-slate-400 font-mono flex items-center gap-1.5 flex-wrap">
+                    <span>Payment #{event.id}</span>
+                    <span>&bull;</span>
+                    <button
+                      onClick={() => {
+                        if (onSelectCustomer && event.customer_id) {
+                          onSelectCustomer(event.customer_id);
+                        }
+                      }}
+                      className="text-blue-400 hover:text-blue-300 font-bold underline cursor-pointer transition-colors inline-flex items-center gap-1"
+                      title={`View ${event.customer_name}'s full customer revenue profile & transaction lifeline`}
+                    >
+                      <span>{event.customer_name} ({event.customer_id})</span>
+                      <ArrowRight className="w-3 h-3 text-blue-400 shrink-0" />
+                    </button>
+                  </h2>
                   <div className="text-4xl font-extrabold text-white num-tabular mt-1">{formatINR(event.amount)}</div>
                 </div>
                 <div className="text-right">

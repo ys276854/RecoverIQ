@@ -160,6 +160,9 @@ export default function App() {
     try {
       const cData = await apiFetch(`/api/case/${caseId}`);
       setCaseData(cData);
+      if (cData && cData.event && cData.event.customer_id) {
+        setSelectedCustomerId(cData.event.customer_id);
+      }
     } catch (e) {
       console.error("Error fetching case:", e);
     }

@@ -192,23 +192,68 @@ function getMockResponse(endpoint, options = {}) {
   }
 
   if (endpoint.includes('/api/customer/')) {
-    return {
-      id: "CUST_8812",
-      customer_id: "CUST_8812",
-      name: "Rahul Sharma",
-      customer_name: "Rahul Sharma",
-      email: "rahul.s@example.com",
-      customer_email: "rahul.s@example.com",
+    const parts = endpoint.split('/api/customer/');
+    const custId = parts[1] || 'CUST_8812';
+    
+    const CUSTOMER_MAP = {
+      'CUST_8812': {
+        id: "CUST_8812", customer_id: "CUST_8812", name: "Rahul Sharma", customer_name: "Rahul Sharma",
+        email: "rahul.s@example.com", customer_email: "rahul.s@example.com", customer_phone: "+91 98765 43210",
+        ltv: 84200.0, succ_txs: 18, successful_transactions: 18, failed_attempts: 2, average_recovery_time_hours: 1.4,
+        timeline: [
+          { status: "SUCCESS", title: "Order #ORD-7102 Paid", description: "Payment of ₹8,400 via UPI succeeded naturally.", timestamp: "Yesterday, 14:20" },
+          { status: "FAILURE", title: "Order #ORD-8271 Gateway Timeout", description: "Credit card payment of ₹12,500 failed (Gateway 504).", timestamp: "Today, 11:15" },
+          { status: "ACTION", title: "Razorpay Payment Link Sent", description: "Dispatched payment link via SMS/WhatsApp.", timestamp: "Today, 11:16" }
+        ]
+      },
+      'CUST_9014': {
+        id: "CUST_9014", customer_id: "CUST_9014", name: "Priya Verma", customer_name: "Priya Verma",
+        email: "priya.v@example.com", customer_email: "priya.v@example.com", customer_phone: "+91 98123 45678",
+        ltv: 32100.0, succ_txs: 7, successful_transactions: 7, failed_attempts: 1, average_recovery_time_hours: 0.8,
+        timeline: [
+          { status: "SUCCESS", title: "Order #ORD-6120 Paid", description: "Payment of ₹3,100 via GPay succeeded.", timestamp: "3 days ago" },
+          { status: "FAILURE", title: "Order #ORD-9014 Checkout Abandoned", description: "UPI checkout session timed out (₹4,200).", timestamp: "Today, 10:45" },
+          { status: "ACTION", title: "Radar Policy Evaluated: WAIT", description: "High natural recovery probability (88.5%). Suppressed intervention.", timestamp: "Today, 10:46" }
+        ]
+      },
+      'CUST_4102': {
+        id: "CUST_4102", customer_id: "CUST_4102", name: "Apex Retail Pvt Ltd", customer_name: "Apex Retail Pvt Ltd",
+        email: "finance@apexretail.in", customer_email: "finance@apexretail.in", customer_phone: "+91 99887 76655",
+        ltv: 450000.0, succ_txs: 42, successful_transactions: 42, failed_attempts: 3, average_recovery_time_hours: 24.0,
+        timeline: [
+          { status: "SUCCESS", title: "Invoice #INV-3801 Settled", description: "B2B payment of ₹1,20,000 cleared via NEFT.", timestamp: "10 days ago" },
+          { status: "FAILURE", title: "Invoice #INV-4102 Payment Overdue", description: "Payment terms exceeded 30 days (₹45,000).", timestamp: "5 days ago" },
+          { status: "ACTION", title: "Formal Invoice Escalation Generated", description: "Created Razorpay Invoice escalation notice.", timestamp: "Today, 09:30" }
+        ]
+      },
+      'CUST_7712': {
+        id: "CUST_7712", customer_id: "CUST_7712", name: "Amit Kumar", customer_name: "Amit Kumar",
+        email: "amit.k@example.com", customer_email: "amit.k@example.com", customer_phone: "+91 97654 32109",
+        ltv: 12400.0, succ_txs: 3, successful_transactions: 3, failed_attempts: 2, average_recovery_time_hours: 0.5,
+        timeline: [
+          { status: "FAILURE", title: "Order #ORD-7712 Checkout Abandoned", description: "Session expired (₹1,200 cart value).", timestamp: "Today, 11:30" },
+          { status: "ACTION", title: "Radar Policy Evaluated: STOP", description: "Intervention cost exceeds expected net margin gain.", timestamp: "Today, 11:31" }
+        ]
+      }
+    };
+
+    return CUSTOMER_MAP[custId] || {
+      id: custId,
+      customer_id: custId,
+      name: custId === 'CUST_9014' ? 'Priya Verma' : custId === 'CUST_4102' ? 'Apex Retail Pvt Ltd' : custId === 'CUST_7712' ? 'Amit Kumar' : 'Rahul Sharma',
+      customer_name: custId === 'CUST_9014' ? 'Priya Verma' : custId === 'CUST_4102' ? 'Apex Retail Pvt Ltd' : custId === 'CUST_7712' ? 'Amit Kumar' : 'Rahul Sharma',
+      email: `${custId.toLowerCase()}@example.com`,
+      customer_email: `${custId.toLowerCase()}@example.com`,
       customer_phone: "+91 98765 43210",
-      ltv: 84200.0,
-      succ_txs: 18,
-      successful_transactions: 18,
+      ltv: 54000.0,
+      succ_txs: 12,
+      successful_transactions: 12,
       failed_attempts: 2,
-      average_recovery_time_hours: 1.4,
+      average_recovery_time_hours: 2.1,
       timeline: [
-        { status: "SUCCESS", title: "Order #ORD-7102 Paid", description: "Payment of ₹8,400 via UPI succeeded naturally.", timestamp: "Yesterday, 14:20" },
-        { status: "FAILURE", title: "Order #ORD-8271 Gateway Timeout", description: "Credit card payment of ₹12,500 failed (Gateway 504).", timestamp: "Today, 11:15" },
-        { status: "ACTION", title: "Razorpay Payment Link Sent", description: "Dispatched payment link via SMS/WhatsApp.", timestamp: "Today, 11:16" }
+        { status: "SUCCESS", title: "Previous Order Settled", description: "Payment completed via Razorpay UPI.", timestamp: "2 days ago" },
+        { status: "FAILURE", title: "Payment Failure Detected", description: "Gateway timeout on payment attempt.", timestamp: "Today, 10:00" },
+        { status: "ACTION", title: "Radar Evaluated Optimal Action", description: "Action determined by EINRV model.", timestamp: "Today, 10:01" }
       ]
     };
   }
