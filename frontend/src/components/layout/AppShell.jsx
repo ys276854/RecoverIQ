@@ -110,11 +110,11 @@ export default function AppShell({
   };
 
   const navItemsPrimary = [
-    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-    { id: 'leaks', label: 'Revenue Leaks', icon: Search },
-    { id: 'queue', label: 'Recovery Queue', icon: Zap },
-    { id: 'decision', label: 'Decision Center', icon: ShieldCheck },
-    { id: 'simulator', label: 'Simulator', icon: TestTube }
+    { id: 'overview', label: 'Overview', shortLabel: 'Overview', icon: LayoutDashboard },
+    { id: 'leaks', label: 'Revenue Leaks', shortLabel: 'Leaks', icon: Search },
+    { id: 'queue', label: 'Recovery Queue', shortLabel: 'Queue', icon: Zap },
+    { id: 'decision', label: 'Decision Center', shortLabel: 'Decision Center', icon: ShieldCheck },
+    { id: 'simulator', label: 'Simulator', shortLabel: 'Simulator', icon: TestTube }
   ];
 
   const navItemsSecondary = [
@@ -125,11 +125,11 @@ export default function AppShell({
   ];
 
   return (
-    <div className="min-h-screen flex flex-col font-sans text-slate-900 bg-slate-50 selection:bg-blue-100 selection:text-blue-900 pb-24">
+    <div className="min-h-screen flex flex-col font-sans text-slate-900 bg-slate-50 selection:bg-blue-100 selection:text-blue-900 pb-24 max-w-full overflow-x-hidden">
       {/* 1. SLEEK 36PX STATUS & TELEMETRY RIBBON (Dark Acrylic) */}
-      <div className="bg-[#090D16] text-slate-300 border-b border-slate-800/90 px-4 sm:px-6 py-1.5 min-h-[36px] flex items-center justify-between gap-2 shadow-xs font-mono text-[11px] z-40 select-none">
+      <div className="bg-[#090D16] text-slate-300 border-b border-slate-800/90 px-3 sm:px-6 py-1.5 min-h-[36px] flex items-center justify-between gap-2 shadow-xs font-mono text-[11px] z-40 select-none max-w-full overflow-x-hidden">
         {/* Left: Compact Consolidated Telemetry Pill */}
-        <div className="flex items-center space-x-2.5">
+        <div className="flex items-center space-x-2 shrink-0">
           <span className="inline-flex items-center gap-1.5 bg-blue-950/80 text-blue-300 px-2 py-0.5 rounded border border-blue-800/60 font-bold">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span>Razorpay Autonomous Radar &bull; 18ms Latency &bull; App Store Active</span>
@@ -140,7 +140,7 @@ export default function AppShell({
         </div>
 
         {/* Right: Presets + Webhook Trigger + Shortcut */}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 shrink-0">
           <button
             onClick={onLogout}
             className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 border border-blue-500/40 text-[11px] font-bold transition-all shadow-xs"
@@ -196,7 +196,7 @@ export default function AppShell({
       <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs font-sans">
         <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 py-2 flex items-center justify-between gap-2 overflow-hidden">
           {/* Brand Logo */}
-          <div className="flex items-center space-x-2 shrink-0">
+          <div className="flex items-center space-x-1.5 shrink-0">
             <button
               onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
               className="lg:hidden p-1 rounded text-slate-600 hover:bg-slate-100"
@@ -211,14 +211,14 @@ export default function AppShell({
               <span className="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-1.5 py-0.5 rounded border border-emerald-300 font-mono">
                 Agentic Stack
               </span>
-              <span className="hidden md:inline text-[11px] font-bold text-slate-500 font-mono pl-1.5 border-l border-slate-200">
+              <span className="hidden 2xl:inline text-[11px] font-bold text-slate-500 font-mono pl-1.5 border-l border-slate-200">
                 LEAK RADAR
               </span>
             </div>
           </div>
 
           {/* Desktop Navigation Links (Responsive fit: Primary tabs + More ▾ dropdown) */}
-          <nav className="hidden lg:flex items-center space-x-1 font-sans">
+          <nav className="hidden lg:flex items-center space-x-1 font-sans shrink-0">
             {navItemsPrimary.map((item) => {
               const Icon = item.icon;
               const isActive = currentTab === item.id;
@@ -233,7 +233,8 @@ export default function AppShell({
                   }`}
                 >
                   <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-slate-500'}`} />
-                  <span>{item.label}</span>
+                  <span className="hidden xl:inline">{item.label}</span>
+                  <span className="xl:hidden">{item.shortLabel}</span>
                 </button>
               );
             })}
