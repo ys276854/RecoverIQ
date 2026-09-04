@@ -69,7 +69,7 @@ export default function App() {
   useEffect(() => {
     async function checkAuth() {
       const searchParams = new URLSearchParams(window.location.search);
-      if (searchParams.get('view') === 'login' || searchParams.get('login') === 'true') {
+      if (searchParams.get('view') === 'login' || searchParams.get('login') === 'true' || searchParams.has('login') || searchParams.has('logout')) {
         authService.clearSession();
         setUser(null);
         setAuthView('login');

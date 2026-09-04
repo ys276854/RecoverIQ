@@ -140,6 +140,15 @@ export default function AppShell({
 
         {/* Right: Presets + Webhook Trigger + Shortcut */}
         <div className="flex items-center space-x-2">
+          <button
+            onClick={onLogout}
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 border border-blue-500/40 text-[11px] font-bold transition-all shadow-xs"
+            title="Return to the Login / Auth Page"
+          >
+            <LogOut className="w-3 h-3 text-blue-400" />
+            <span>🔑 Login Screen</span>
+          </button>
+
           {webhookMessage ? (
             <span className="text-emerald-400 font-bold text-[11px] animate-pulse">✓ {webhookMessage}</span>
           ) : (
