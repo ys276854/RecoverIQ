@@ -665,15 +665,16 @@ class GuardrailUpdateModel(BaseModel):
     quiet_hours_enabled: Optional[bool] = None
 
 @app.post("/api/guardrails/update")
-def update_guardrails(payload: GuardrailUpdateModel):
+def update_guardrails_partial(payload: GuardrailUpdateModel):
     """Updates active merchant guardrail policies in memory."""
+    global GUARDRAILS, ENGINE
     if payload.max_discount_cap is not None:
-        GUARDRAILS_CONFIG["max_discount_amount"] = payload.max_discount_cap
+        GUARDRAILS.max_discount_amount = payload.max_discount_cap
     if payload.max_outbound_touches is not None:
-        GUARDRAILS_CONFIG["max_touches_per_case"] = payload.max_outbound_touches
-    if payload.min_einrv_threshold is not None:
-        GUARDRAILS_CONFIG["min_expected_net_value"] = payload.min_einrv_threshold
-    return {"success": True, "message": "Guardrail policies updated successfully", "guardrails": GUARDRAILS_CONFIG}
+        GUARDRAILS.max_touches_per_48h = payload.max_outbound_touches
+    ENGINE = RevenueLeakEngine(GUARDRAILS)
+    return {"success": True, "message": "Guardrail policies updated successfully", "guardrails": GUARDRAILS}
+
 
 # Webhook Simulator Endpoint (Razorpay payment.failed payload)
 class WebhookPayloadModel(BaseModel):

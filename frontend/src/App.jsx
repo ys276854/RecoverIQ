@@ -18,6 +18,35 @@ import { authService } from './services/auth';
 import { apiFetch } from './services/api';
 import { CheckCircle2, Zap, X, ShieldCheck, ExternalLink, ArrowRight } from 'lucide-react';
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("Dashboard Error caught:", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="p-8 text-center bg-slate-950 text-slate-100 min-h-screen font-sans flex flex-col items-center justify-center space-y-4">
+          <div className="p-4 bg-rose-950/80 border border-rose-800 rounded-xl max-w-md w-full space-y-2">
+            <h2 className="text-base font-bold text-rose-300">Dashboard Error Catching</h2>
+            <p className="text-xs text-slate-300 font-mono text-left">{this.state.error?.toString()}</p>
+          </div>
+          <button onClick={() => window.location.reload()} className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition-all shadow-md">
+            Reload Dashboard Console
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function App() {
   const [authView, setAuthView] = useState('login'); // 'login', 'signup', 'onboarding', 'app'
   const [user, setUser] = useState(null);
@@ -103,34 +132,7 @@ export default function App() {
     }
   }, [authView, selectedCaseId]);
 
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
-  static getDerivedStateFromError(error) {
-    return { hasError: true, error };
-  }
-  componentDidCatch(error, errorInfo) {
-    console.error("Dashboard Error caught:", error, errorInfo);
-  }
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="p-8 text-center bg-slate-950 text-slate-100 min-h-screen font-sans flex flex-col items-center justify-center space-y-4">
-          <div className="p-4 bg-rose-950/80 border border-rose-800 rounded-xl max-w-md w-full space-y-2">
-            <h2 className="text-base font-bold text-rose-300">Dashboard Error Catching</h2>
-            <p className="text-xs text-slate-300 font-mono text-left">{this.state.error?.toString()}</p>
-          </div>
-          <button onClick={() => window.location.reload()} className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition-all shadow-md">
-            Reload Dashboard Console
-          </button>
-        </div>
-      );
-    }
-    return this.props.children;
-  }
-}
+
 
   const handleLoginSuccess = (usr) => {
     setUser(usr);
