@@ -33,9 +33,9 @@ export const setApiBaseUrl = (url) => {
 // Client-Side Fallback Engine for Unreachable / Deployed Backend 404s
 const MOCK_USER = {
   id: "USR_101",
-  email: "ys276854@gmail.com",
-  full_name: "Yash Srivastava",
-  business_name: "Acme Retail Private Ltd",
+  email: "demo@acmecommerce.in",
+  full_name: "Demo Merchant Admin",
+  business_name: "Acme Commerce India",
   country: "India",
   currency: "INR",
   onboarded: true
@@ -116,6 +116,13 @@ function getMockResponse(endpoint, options = {}) {
   }
 
   if (endpoint.includes('/api/auth/me')) {
+    const hasToken = (options.headers && (options.headers.Authorization || options.headers.authorization)) ||
+      (typeof localStorage !== 'undefined' && localStorage.getItem('rzp_leak_radar_token')) ||
+      (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('rzp_leak_radar_token'));
+    
+    if (!hasToken) {
+      return { user: null };
+    }
     return { user: MOCK_USER };
   }
 
