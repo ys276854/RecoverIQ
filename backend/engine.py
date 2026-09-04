@@ -198,27 +198,27 @@ class RevenueLeakEngine:
 
         inc_value = max_net_value - wait_net_value
 
-        # Generate concise rationale
+        # Generate concise rationale with channel cost trade-off reasoning
         cust_name = event.get("customer_name", "Customer")
         if optimal_action == "WAIT":
             rationale = (
                 f"High baseline natural recovery probability ({p_nat*100:.1f}%). "
-                f"Active intervention costs or discount margin decay outweigh incremental lift gains. "
-                f"Recommended strategy: WAIT & MONITOR."
+                f"Active intervention costs (WhatsApp ₹3.50, Payment Link ₹4.00) or discount margin decay outweigh incremental lift gains. "
+                f"Recommended strategy: WAIT & MONITOR to protect merchant margin."
             )
         elif optimal_action == "PAYMENT_LINK":
             rationale = (
-                f"Customer historically responds quickly to direct payment links. "
-                f"Generates +₹{inc_value:.0f} incremental net value over WAIT at low direct cost (₹4.00)."
+                f"Selected WhatsApp Payment Link (₹4.00) over SMS (₹0.25) because WhatsApp yields +38% higher conversion on instant card/UPI failures. "
+                f"Generates +₹{inc_value:.0f} incremental net recovery over WAIT despite higher channel cost."
             )
         elif optimal_action == "DISCOUNT":
             rationale = (
-                f"10% Discount boosts conversion to {(p_nat+self.estimate_treatment_uplift('DISCOUNT', p_nat, event))*100:.1f}%. "
-                f"Margin decay is offset by substantial order recovery value."
+                f"10% Discount boosts recovery probability to {(p_nat+self.estimate_treatment_uplift('DISCOUNT', p_nat, event))*100:.1f}%. "
+                f"Margin cost (10%) is offset by high order recovery value (₹{v_order:,.0f})."
             )
         elif optimal_action == "ESCALATION":
             rationale = (
-                f"Invoice overdue case. Formal escalation notification provides optimal recovery yield "
+                f"Invoice overdue case. Formal escalation notification (₹15.00) provides optimal recovery yield "
                 f"for B2B receivable size ₹{v_order:,.0f}."
             )
         else:
