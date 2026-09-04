@@ -69,22 +69,18 @@ export default function App() {
 
   const fetchAllData = async () => {
     try {
-      const [ovRes, leaksRes, qRes] = await Promise.all([
-        fetch('/api/overview'),
-        fetch('/api/leaks'),
-        fetch('/api/queue')
+      const [ov, leaks, q] = await Promise.all([
+        apiFetch('/api/overview'),
+        apiFetch('/api/leaks'),
+        apiFetch('/api/queue')
       ]);
-      const ov = await ovRes.json();
-      const leaks = await leaksRes.json();
-      const q = await qRes.json();
 
       setOverviewData(ov);
-      setLeaksData(leaks);
+      setLeaksData(Array.isArray(leaks) ? leaks : []);
       setQueueData(q);
 
       if (selectedCaseId) {
-        const caseRes = await fetch(`/api/case/${selectedCaseId}`);
-        const cData = await caseRes.json();
+        const cData = await apiFetch(`/api/case/${selectedCaseId}`);
         setCaseData(cData);
       }
     } catch (e) {

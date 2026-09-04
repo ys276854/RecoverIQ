@@ -137,6 +137,33 @@ function getMockResponse(endpoint, options = {}) {
     };
   }
 
+  if (endpoint.includes('/api/decisions/live')) {
+    return [
+      {
+        id: "DEC_101",
+        timestamp: "2 mins ago",
+        order_id: "ORD-8271",
+        customer_name: "Rahul Sharma",
+        amount: 12500.0,
+        natural_recovery_prob: 0.12,
+        action: "PAYMENT_LINK",
+        einrv: 1840.0,
+        reason: "Low natural recovery probability (12%). Dispatching payment link yields optimal expected net recovery."
+      },
+      {
+        id: "DEC_102",
+        timestamp: "5 mins ago",
+        order_id: "ORD-9014",
+        customer_name: "Priya Verma",
+        amount: 4200.0,
+        natural_recovery_prob: 0.88,
+        action: "WAIT",
+        einrv: 3717.0,
+        reason: "High natural recovery probability (88%). Suppressing intervention to protect merchant margin."
+      }
+    ];
+  }
+
   if (endpoint.includes('/api/action/execute') || endpoint.includes('/api/demo/trigger') || endpoint.includes('/api/webhook/simulate')) {
     return {
       success: true,
@@ -148,24 +175,105 @@ function getMockResponse(endpoint, options = {}) {
 
   if (endpoint.includes('/api/audit')) {
     return [
-      { id: "AUDIT_101", timestamp: "14:22:10", event_type: "Payment Failure", entity_id: "#ORD-8271", customer_name: "Rahul Sharma", action_taken: "PAYMENT_LINK", expected_net_value: 1840.0, status: "VERIFIED" }
+      {
+        id: "AUDIT_101",
+        timestamp: "14:22:10",
+        event_type: "Payment Failure",
+        entity_id: "#ORD-8271",
+        customer_name: "Rahul Sharma",
+        action_taken: "PAYMENT_LINK",
+        expected_net_value: 1840.0,
+        status: "VERIFIED",
+        reason: "Low natural recovery prob (12%). Sent payment link.",
+        policy_check: "PASSED (Discount ≤ ₹500, Touches ≤ 2)",
+        actual_outcome: "RECOVERED (₹12,500)"
+      }
     ];
   }
 
   if (endpoint.includes('/api/customer/')) {
-    return { id: "CUST_8812", name: "Rahul Sharma", email: "rahul.s@example.com", ltv: 84200.0, succ_txs: 18 };
+    return {
+      id: "CUST_8812",
+      customer_id: "CUST_8812",
+      name: "Rahul Sharma",
+      customer_name: "Rahul Sharma",
+      email: "rahul.s@example.com",
+      customer_email: "rahul.s@example.com",
+      customer_phone: "+91 98765 43210",
+      ltv: 84200.0,
+      succ_txs: 18,
+      successful_transactions: 18,
+      failed_attempts: 2,
+      average_recovery_time_hours: 1.4,
+      timeline: [
+        { status: "SUCCESS", title: "Order #ORD-7102 Paid", description: "Payment of ₹8,400 via UPI succeeded naturally.", timestamp: "Yesterday, 14:20" },
+        { status: "FAILURE", title: "Order #ORD-8271 Gateway Timeout", description: "Credit card payment of ₹12,500 failed (Gateway 504).", timestamp: "Today, 11:15" },
+        { status: "ACTION", title: "Razorpay Payment Link Sent", description: "Dispatched payment link via SMS/WhatsApp.", timestamp: "Today, 11:16" }
+      ]
+    };
   }
 
   if (endpoint.includes('/api/experiments')) {
-    return { status: "ACTIVE", control_group_conversion: 0.586, test_group_conversion: 0.88 };
+    return {
+      experiment_name: "Radar Algorithmic EINRV vs. Legacy Static Retries",
+      status: "ACTIVE",
+      duration: "14 Days",
+      control_group_conversion: 0.586,
+      test_group_conversion: 0.88,
+      metrics: {
+        net_lift_amount: 82631.0,
+        net_lift_pct: "+27.5%",
+        control: {
+          eligible_cases: 1250,
+          gross_recovered: 340000.0,
+          direct_costs: 25000.0,
+          margin_discounts: 14000.0,
+          net_recovered: 301000.0,
+          spam_rate: "2.4%"
+        },
+        treatment: {
+          eligible_cases: 1250,
+          gross_recovered: 395000.0,
+          direct_costs: 10000.0,
+          margin_discounts: 3400.0,
+          net_recovered: 383631.0,
+          spam_rate: "0.3%"
+        }
+      }
+    };
   }
 
   if (endpoint.includes('/api/guardrails')) {
-    return { max_discount_amount: 500, max_intervention_cost: 25, max_touches_per_48h: 2, quiet_hours_start: 21, quiet_hours_end: 8 };
+    return {
+      max_discount_amount: 500,
+      max_intervention_cost: 25,
+      max_touches_per_48h: 2,
+      quiet_hours_start: 21,
+      quiet_hours_end: 8,
+      daily_budget_cap: 10000,
+      allowed_actions: ["PAYMENT_LINK", "REMINDER", "RETRY", "ESCALATION", "DISCOUNT"]
+    };
   }
 
   if (endpoint.includes('/api/simulator/run')) {
-    return { baseline_recovered: 299600, candidate_recovered: 382231, net_lift: 82631, roi: 14.2 };
+    return {
+      baseline_recovered: 299600,
+      candidate_recovered: 382231,
+      baseline_net: 299600,
+      radar_net: 382231,
+      baseline_costs: 25000,
+      radar_costs: 8400,
+      baseline_discounts: 14000,
+      radar_discounts: 3200,
+      baseline_recovery_rate: 58.6,
+      radar_recovery_rate: 87.1,
+      baseline_gross_recovered: 338600,
+      radar_gross_recovered: 393831,
+      net_gain: 82631,
+      net_gain_pct: 27.5,
+      net_lift: 82631,
+      roi: 14.2
+    };
   }
 
   return { success: true };

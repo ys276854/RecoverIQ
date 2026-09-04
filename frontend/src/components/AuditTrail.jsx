@@ -19,7 +19,7 @@ export default function AuditTrail() {
       setLoading(true);
       try {
         const data = await apiFetch('/api/audit');
-        setLogs(data);
+        setLogs(Array.isArray(data) ? data : []);
       } catch (e) {
         console.error("Error fetching audit logs:", e);
       } finally {
@@ -73,7 +73,7 @@ export default function AuditTrail() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-sans">
-              {logs.map((log) => (
+              {(Array.isArray(logs) ? logs : []).map((log) => (
                 <tr key={log.id} className="hover:bg-slate-50 transition-colors">
                   <td className="p-3.5 typo-customer-metadata font-mono">{log.timestamp}</td>
                   <td className="p-3.5 font-semibold text-slate-900 font-mono">{log.entity_id}</td>

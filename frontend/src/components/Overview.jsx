@@ -17,7 +17,7 @@ export default function Overview({ overviewData, onNavigate, onSelectCase }) {
     async function fetchLiveFeed() {
       try {
         const data = await apiFetch('/api/decisions/live');
-        setLiveFeed(data);
+        setLiveFeed(Array.isArray(data) ? data : []);
       } catch (e) {
         console.error("Error fetching live feed:", e);
       }
@@ -330,7 +330,7 @@ export default function Overview({ overviewData, onNavigate, onSelectCase }) {
           </div>
 
           <div className="space-y-3 font-mono text-xs flex-1 overflow-y-auto max-h-[420px]">
-            {liveFeed.map((item) => {
+            {(Array.isArray(liveFeed) ? liveFeed : []).map((item) => {
               const isWait = item.action === 'WAIT';
               const isPayLink = item.action === 'PAYMENT_LINK';
               const isReminder = item.action === 'REMINDER';
@@ -409,7 +409,7 @@ export default function Overview({ overviewData, onNavigate, onSelectCase }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-mono">
-              {leak_categories.map((cat, idx) => (
+              {(Array.isArray(leak_categories) ? leak_categories : []).map((cat, idx) => (
                 <tr key={idx} className="hover:bg-slate-50 transition-colors">
                   <td className="p-3.5 font-sans font-medium text-slate-900">{cat.category}</td>
                   <td className="p-3.5 text-right text-slate-600">{cat.events_count}</td>

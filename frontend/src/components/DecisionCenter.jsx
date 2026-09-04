@@ -35,7 +35,8 @@ export default function DecisionCenter({ caseData, onExecuteAction, onSelectCust
     }).format(val || 0);
   };
 
-  const optimalActionObj = evaluation.actions_evaluated.find(a => a.is_optimal) || evaluation.actions_evaluated[0];
+  const actionsEvaluated = Array.isArray(evaluation?.actions_evaluated) ? evaluation.actions_evaluated : DEFAULT_CASE.evaluation.actions_evaluated;
+  const optimalActionObj = actionsEvaluated.find(a => a.is_optimal) || actionsEvaluated[0];
 
   return (
     <div className="space-y-6 pb-16">
@@ -93,7 +94,7 @@ export default function DecisionCenter({ caseData, onExecuteAction, onSelectCust
             <div className="p-6 space-y-4 bg-white">
               <div className="text-xs font-bold tracking-wider text-slate-500 uppercase font-mono">WHAT SHOULD WE DO? (STRATEGY MATRIX: ACT NOW | WAIT | BLOCK)</div>
               <div className="space-y-3 font-mono text-xs">
-                {evaluation.actions_evaluated.map((act) => {
+                {actionsEvaluated.map((act) => {
                   const isOptimal = act.is_optimal;
                   return (
                     <div
