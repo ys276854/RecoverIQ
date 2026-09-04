@@ -481,11 +481,12 @@ def get_audit_trail():
 
 @app.get("/api/experiments")
 def get_experiments():
-    """Returns A/B testing benchmarking results."""
+    """Returns A/B testing benchmarking results with explicit evaluation provenance."""
     return {
         "experiment_name": "A/B Policy Test: Static Retries vs Radar EINRV",
         "status": "RUNNING (50/50 Cohort Split)",
         "duration": "14 Days",
+        "provenance_statement": "Controlled offline counterfactual evaluation backtested on held-out test sets from Olist E-Commerce and Hillstrom RCT datasets; not claimed as live Razorpay production merchant data.",
         "metrics": {
             "control": {
                 "policy_name": "Static Retries & 10% Discount",
