@@ -69,7 +69,10 @@ export default function App() {
   useEffect(() => {
     async function checkAuth() {
       const searchParams = new URLSearchParams(window.location.search);
-      if (searchParams.get('view') === 'login' || searchParams.get('login') === 'true' || searchParams.has('login') || searchParams.has('logout')) {
+      const isExplicitAppView = searchParams.get('view') === 'app' || searchParams.get('app') === 'true';
+      const hasActiveSession = sessionStorage.getItem('rzp_active_session') === 'true';
+
+      if (!isExplicitAppView && !hasActiveSession) {
         authService.clearSession();
         setUser(null);
         setAuthView('login');
@@ -135,6 +138,7 @@ export default function App() {
 
 
   const handleLoginSuccess = (usr) => {
+    sessionStorage.setItem('rzp_active_session', 'true');
     setUser(usr);
     if (!usr.onboarded) {
       setAuthView('onboarding');
@@ -145,11 +149,13 @@ export default function App() {
   };
 
   const handleSignupSuccess = (usr) => {
+    sessionStorage.setItem('rzp_active_session', 'true');
     setUser(usr);
     setAuthView('onboarding');
   };
 
   const handleLogout = async () => {
+    sessionStorage.removeItem('rzp_active_session');
     await authService.logout();
     setUser(null);
     setAuthView('login');
