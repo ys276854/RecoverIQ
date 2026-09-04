@@ -109,19 +109,16 @@ export default function AppShell({
     }
   };
 
-  const navItemsPrimary = [
+  const allNavItems = [
     { id: 'overview', label: 'Overview', shortLabel: 'Overview', icon: LayoutDashboard },
     { id: 'leaks', label: 'Revenue Leaks', shortLabel: 'Leaks', icon: Search },
     { id: 'queue', label: 'Recovery Queue', shortLabel: 'Queue', icon: Zap },
     { id: 'decision', label: 'Decision Center', shortLabel: 'Decision Center', icon: ShieldCheck },
-    { id: 'simulator', label: 'Simulator', shortLabel: 'Simulator', icon: TestTube }
-  ];
-
-  const navItemsSecondary = [
-    { id: 'customer', label: 'Customers', icon: User },
-    { id: 'experiments', label: 'Experiments', icon: TestTube },
-    { id: 'audit', label: 'Audit Trail', icon: FileText },
-    { id: 'settings', label: 'Guardrails', icon: SettingsIcon }
+    { id: 'simulator', label: 'Simulator', shortLabel: 'Simulator', icon: TestTube },
+    { id: 'customer', label: 'Customers', shortLabel: 'Customers', icon: User },
+    { id: 'experiments', label: 'Experiments', shortLabel: 'Experiments', icon: TestTube },
+    { id: 'audit', label: 'Audit Trail', shortLabel: 'Audit', icon: FileText },
+    { id: 'settings', label: 'Guardrails', shortLabel: 'Guardrails', icon: SettingsIcon }
   ];
 
   return (
@@ -192,7 +189,7 @@ export default function AppShell({
         </div>
       </div>
 
-      {/* 2. MAIN BRAND & NAVIGATION HEADER (Zero Overflow, Responsive Fit) */}
+      {/* 2. MAIN BRAND & NAVIGATION HEADER (Zero Overflow, Responsive Flat 9-Tab Navbar) */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs font-sans">
         <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 py-2 flex items-center justify-between gap-2">
           {/* Brand Logo */}
@@ -211,22 +208,19 @@ export default function AppShell({
               <span className="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-1.5 py-0.5 rounded border border-emerald-300 font-mono">
                 Agentic Stack
               </span>
-              <span className="hidden 2xl:inline text-[11px] font-bold text-slate-500 font-mono pl-1.5 border-l border-slate-200">
-                LEAK RADAR
-              </span>
             </div>
           </div>
 
-          {/* Desktop Navigation Links (Responsive fit: Primary tabs + More ▾ dropdown) */}
+          {/* Desktop Navigation Links (All 9 tabs flat & responsive) */}
           <nav className="hidden lg:flex items-center space-x-1 font-sans shrink-0">
-            {navItemsPrimary.map((item) => {
+            {allNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = currentTab === item.id;
               return (
                 <button
                   key={item.id}
                   onClick={() => onNavigate(item.id)}
-                  className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all whitespace-nowrap ${
+                  className={`px-2 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all whitespace-nowrap ${
                     isActive
                       ? 'bg-blue-600 text-white shadow-xs'
                       : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
@@ -238,74 +232,10 @@ export default function AppShell({
                 </button>
               );
             })}
-
-            <div className="w-px h-4 bg-slate-200 mx-1" />
-
-            {/* Secondary Nav Items (Flat on 2XL, Dropdown on LG/XL) */}
-            <div className="hidden 2xl:flex items-center space-x-1">
-              {navItemsSecondary.map((item) => {
-                const Icon = item.icon;
-                const isActive = currentTab === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => onNavigate(item.id)}
-                    className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all whitespace-nowrap ${
-                      isActive
-                        ? 'bg-blue-600 text-white shadow-xs'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                    }`}
-                  >
-                    <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                    <span>{item.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* "More ▾" Dropdown for standard LG and XL screens */}
-            <div className="relative 2xl:hidden">
-              <button
-                onClick={() => setShowMoreNav(!showMoreNav)}
-                className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all whitespace-nowrap ${
-                  navItemsSecondary.some(i => i.id === currentTab)
-                    ? 'bg-blue-600 text-white shadow-xs'
-                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
-                }`}
-              >
-                <span>More</span>
-                <ChevronRight className={`w-3.5 h-3.5 transition-transform ${showMoreNav ? 'rotate-90' : 'rotate-0'}`} />
-              </button>
-
-              {showMoreNav && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-xl shadow-xl p-1 text-xs space-y-0.5 z-40">
-                  {navItemsSecondary.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = currentTab === item.id;
-                    return (
-                      <button
-                        key={item.id}
-                        onClick={() => { setShowMoreNav(false); onNavigate(item.id); }}
-                        className={`w-full text-left px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-2 ${
-                          isActive ? 'bg-blue-50 text-blue-600 font-extrabold' : 'text-slate-700 hover:bg-slate-50'
-                        }`}
-                      >
-                        <Icon className="w-3.5 h-3.5 text-slate-500" />
-                        <span>{item.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
           </nav>
 
           {/* Right Side: Merchant Info & Account Controls */}
           <div className="flex items-center space-x-2 text-xs shrink-0 font-sans">
-            <span className="hidden 2xl:inline-flex items-center gap-1 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-md text-slate-800 font-mono text-[11px] font-bold">
-              🏢 {user?.business_name || 'Acme Commerce India'}
-            </span>
-
             <div className="relative">
               <button
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
@@ -342,7 +272,7 @@ export default function AppShell({
         {/* Mobile Navigation Drawer */}
         {mobileSidebarOpen && (
           <div className="lg:hidden border-t border-slate-200 bg-slate-50 p-3 space-y-1">
-            {[...navItemsPrimary, ...navItemsSecondary].map((item) => (
+            {allNavItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => { onNavigate(item.id); setMobileSidebarOpen(false); }}
