@@ -158,7 +158,7 @@ export default function Overview({ overviewData, onNavigate, onSelectCase }) {
           <div className="bg-emerald-950/80 border-2 border-emerald-400/80 rounded-xl p-4 space-y-1 shadow-lg shadow-emerald-950/50">
             <div className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-400">5. Money Recovered</div>
             <div className="text-2xl font-black text-emerald-200">₹11.2L</div>
-            <div className="text-[11px] font-extrabold text-emerald-300 font-sans">60.8% Recovery Rate</div>
+            <div className="text-[11px] font-extrabold text-emerald-300 font-sans">60.8% Post-Intervention Recovery Rate</div>
           </div>
         </div>
       </div>

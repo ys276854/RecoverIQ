@@ -215,8 +215,8 @@ export default function DecisionCenter({ caseData, onExecuteAction, onSelectCust
                 <div className="text-[11px] text-slate-300 space-y-1.5 leading-relaxed">
                   <div>• <strong>Formula:</strong> <code className="text-emerald-400 font-bold">EINRV(a) = [P(Y=1|T=a, X) - P(Y=1|T=0, X)] × V - C_a - D_a</code></div>
                   <div>• <strong>Payment Amount (V):</strong> ₹12,500.00</div>
-                  <div>• <strong>Baseline Organic Prob P(Y=1|T=0, X):</strong> 12.0% (0.12)</div>
-                  <div>• <strong>Payment Link Prob P(Y=1|T=a, X):</strong> 88.0% (0.88)</div>
+                  <div>• <strong>Case-Specific Baseline Organic Prob P(Y=1|T=0, X):</strong> 12.0% (0.12) <span className="text-amber-400 font-sans text-[10px]">(Gateway 504 Timeout)</span></div>
+                  <div>• <strong>Payment Link Treatment Prob P(Y=1|T=a, X):</strong> 88.0% (0.88)</div>
                   <div>• <strong>Causal Incremental Lift (ΔP):</strong> 0.88 - 0.12 = <strong className="text-blue-400">+76.0% (+0.76)</strong></div>
                   <div>• <strong>Gross Incremental Value:</strong> 0.76 × ₹12,500 = <strong className="text-emerald-400">₹9,500.00</strong></div>
                   <div>• <strong>SMS Fee (C_a) + Margin Discount (D_a):</strong> ₹4.00 + ₹0.00 = <strong className="text-rose-400">₹4.00</strong></div>
