@@ -331,6 +331,7 @@ export default function App() {
         {currentTab === 'customer' && (
           <CustomerProfile
             customerId={selectedCustomerId}
+            onSelectCustomer={(cId) => setSelectedCustomerId(cId)}
             onBack={() => setCurrentTab('decision')}
           />
         )}
