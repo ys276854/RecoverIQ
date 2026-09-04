@@ -175,6 +175,15 @@ export default function AppShell({
               🏢 {user?.business_name || 'Acme Commerce Pvt Ltd'}
             </span>
 
+            <button
+              onClick={onLogout}
+              className="bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 font-bold text-xs px-3 py-1.5 rounded-lg shadow-2xs flex items-center gap-1.5 transition-all"
+              title="Sign out to return to the Login Page"
+            >
+              <LogOut className="w-3.5 h-3.5 text-slate-500" />
+              <span>Login Page</span>
+            </button>
+
             <div className="relative">
               <button
                 onClick={() => setShowProfileMenu(!showProfileMenu)}

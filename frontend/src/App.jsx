@@ -39,6 +39,15 @@ export default function App() {
   // Validate existing auth session on mount
   useEffect(() => {
     async function checkAuth() {
+      const searchParams = new URLSearchParams(window.location.search);
+      if (searchParams.get('view') === 'login' || searchParams.get('login') === 'true') {
+        authService.clearSession();
+        setUser(null);
+        setAuthView('login');
+        setLoadingAuth(false);
+        return;
+      }
+
       const activeUser = await authService.fetchCurrentUser();
       if (activeUser) {
         setUser(activeUser);
