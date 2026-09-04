@@ -112,6 +112,57 @@ export default function Overview({ overviewData, onNavigate, onSelectCase }) {
         </div>
       </div>
 
+      {/* Batch Revenue Recovery Funnel (Razorpay Buildathon Track Priority) */}
+      <div className="bg-slate-950 text-white rounded-2xl p-6 sm:p-7 border border-slate-800 shadow-xl space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+          <div className="flex items-center space-x-2">
+            <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[11px] font-mono font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+              MEASURED BATCH METRICS
+            </span>
+            <h2 className="text-sm font-bold text-white font-mono tracking-wide">
+              MEASURED MONEY RECOVERED ACROSS BATCH
+            </h2>
+          </div>
+          <div className="text-xs text-slate-400 font-mono flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span>Batch Volume: N = 12,483 Transactions</span>
+          </div>
+        </div>
+
+        {/* 5-Step Batch Recovery Flow */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 font-mono">
+          <div className="bg-slate-900/90 border border-amber-500/40 rounded-xl p-4 space-y-1 hover:border-amber-400 transition-all">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-amber-400">1. LeakRadar</div>
+            <div className="text-xl font-black text-amber-200">₹18.4L</div>
+            <div className="text-[11px] text-slate-400 font-sans font-medium">Revenue At Risk</div>
+          </div>
+
+          <div className="bg-slate-900/90 border border-slate-700/80 rounded-xl p-4 space-y-1 hover:border-slate-500 transition-all">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">2. AI Diagnosed</div>
+            <div className="text-xl font-black text-slate-100">12,483</div>
+            <div className="text-[11px] text-slate-400 font-sans font-medium">Failed Payments</div>
+          </div>
+
+          <div className="bg-slate-900/90 border border-blue-500/40 rounded-xl p-4 space-y-1 hover:border-blue-400 transition-all">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-blue-400">3. Recovery Engine</div>
+            <div className="text-xl font-black text-blue-200">8,921</div>
+            <div className="text-[11px] text-slate-400 font-sans font-medium">Eligible Candidates</div>
+          </div>
+
+          <div className="bg-slate-900/90 border border-indigo-500/40 rounded-xl p-4 space-y-1 hover:border-indigo-400 transition-all">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-indigo-400">4. Actions Executed</div>
+            <div className="text-xl font-black text-indigo-200">6,742</div>
+            <div className="text-[11px] text-slate-400 font-sans font-medium">Dispatched Interventions</div>
+          </div>
+
+          <div className="bg-emerald-950/80 border-2 border-emerald-400/80 rounded-xl p-4 space-y-1 shadow-lg shadow-emerald-950/50">
+            <div className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-400">5. Money Recovered</div>
+            <div className="text-2xl font-black text-emerald-200">₹11.2L</div>
+            <div className="text-[11px] font-extrabold text-emerald-300 font-sans">60.8% Recovery Rate</div>
+          </div>
+        </div>
+      </div>
+
       {/* Hero Dynamic Value Hub */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none"></div>

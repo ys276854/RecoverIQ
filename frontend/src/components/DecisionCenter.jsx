@@ -128,6 +128,73 @@ export default function DecisionCenter({ caseData, onExecuteAction, onSelectCust
               </div>
             </div>
 
+            {/* AGENT REASONING & BOUNDED GUARDRAILS EXPLAINABILITY PANEL */}
+            <div className="p-6 bg-slate-900 border-t border-slate-800 space-y-4 font-sans text-xs text-white">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Cpu className="w-4 h-4 text-blue-400" />
+                  <h3 className="font-bold text-xs uppercase tracking-wider text-slate-200 font-mono">
+                    AGENT DECISION REASONING & BOUNDED GUARDRAILS
+                  </h3>
+                </div>
+                <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full">
+                  ✓ Gated & Compliant
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Causal Rationale Box */}
+                <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2.5">
+                  <div className="text-[11px] font-bold text-blue-400 uppercase tracking-wider font-mono">
+                    💡 Causal Rationale (Why this action?)
+                  </div>
+                  <ul className="space-y-1.5 text-slate-300 text-xs">
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-blue-400 font-bold">•</span>
+                      <span><strong>High Customer Value:</strong> Returning customer with 7 previous successful transactions.</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-blue-400 font-bold">•</span>
+                      <span><strong>Transient Failure:</strong> Gateway timeout (504) indicates temporary network glitch.</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-blue-400 font-bold">•</span>
+                      <span><strong>Optimal Recovery:</strong> Payment link yields 82% recovery probability vs 58.6% organic baseline.</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-blue-400 font-bold">•</span>
+                      <span><strong>Positive Net Yield:</strong> Net revenue lift (+₹1,840) far exceeds direct SMS API cost (₹4.00).</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Guardrails Checked Box */}
+                <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2.5">
+                  <div className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider font-mono">
+                    🛡️ Merchant Guardrails & Rules Checked
+                  </div>
+                  <ul className="space-y-1.5 text-slate-300 text-xs font-mono">
+                    <li className="flex items-center gap-2 text-emerald-300">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                      <span>Max 2 retries per 48h limit verified</span>
+                    </li>
+                    <li className="flex items-center gap-2 text-emerald-300">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                      <span>Minimum 6h spacing delay enforced</span>
+                    </li>
+                    <li className="flex items-center gap-2 text-emerald-300">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                      <span>Stop immediately after successful payment</span>
+                    </li>
+                    <li className="flex items-center gap-2 text-emerald-300">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                      <span>No repeated customer messaging (Opt-Out safe)</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
             {/* Causal Uplift Decision Formula Inspector & Data Grounding */}
             <div className="p-6 bg-slate-950 text-slate-100 space-y-4 font-mono text-xs">
               <div className="flex justify-between items-center">

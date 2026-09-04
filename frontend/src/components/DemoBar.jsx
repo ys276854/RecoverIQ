@@ -82,6 +82,16 @@ export default function DemoBar({ onTriggerDemo, onReload }) {
           <Ban className="w-3.5 h-3.5 text-rose-400" /> Case 3: Block
         </button>
 
+        {/* Failure Recovery Resiliency Demo Scenario */}
+        <button
+          onClick={() => onTriggerDemo('FAILURE_RECOVERY')}
+          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/40 transition-all text-xs font-bold shadow-xs"
+          title="Simulate API failure (502 Bad Gateway) and circuit-breaker fallback recovery flow"
+        >
+          <Cpu className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
+          <span>🛡️ Failure Recovery Demo</span>
+        </button>
+
         <button
           onClick={onReload}
           className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-700 transition-all text-xs"

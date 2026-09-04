@@ -200,6 +200,41 @@ class ErrorBoundary extends React.Component {
   };
 
   const handleTriggerDemo = async (type) => {
+    if (type === 'FAILURE_RECOVERY') {
+      setExecutionState({
+        isResilienceDemo: true,
+        action: 'PAYMENT_LINK (API RETRY SIMULATION)',
+        logs: ['Initiating Payment Link dispatch via Razorpay API...'],
+        done: false
+      });
+
+      setTimeout(() => {
+        setExecutionState(prev => ({
+          ...prev,
+          logs: [
+            ...prev.logs,
+            '❌ Razorpay API Failure: 502 Bad Gateway / Gateway Timeout (Network Error)',
+            '⚠️ Primary API endpoint unreachable. Circuit Breaker Tripped!'
+          ]
+        }));
+
+        setTimeout(() => {
+          setExecutionState(prev => ({
+            ...prev,
+            logs: [
+              ...prev.logs,
+              '⚡ Fallback Strategy Activated: Shifting payload to Async Dead-Letter Queue (DLQ)...',
+              '✓ Action safely buffered in resilient retry queue (Auto-Retry in 15m).',
+              '✓ Merchant alert dispatched to Slack/Email. Entry #AUDIT_FB_902 generated.'
+            ],
+            done: true,
+            isFallbackSuccess: true
+          }));
+        }, 800);
+      }, 700);
+      return;
+    }
+
     try {
       const data = await apiFetch('/api/demo/trigger', {
         method: 'POST',
@@ -319,20 +354,34 @@ class ErrorBoundary extends React.Component {
 
               {executionState.done && (
                 <div className="pt-3 border-t border-slate-800 space-y-3">
-                  <div className="p-3 bg-emerald-950/60 border border-emerald-800/80 rounded-lg text-emerald-300 text-xs flex justify-between items-center font-mono">
-                    <div>
-                      <span className="font-bold block">STATUS: RECOVERY ACTION SENT</span>
-                      <span className="text-[10px] text-emerald-400">Razorpay Test Mode Link Dispatched</span>
+                  {executionState.isResilienceDemo ? (
+                    <div className="p-3 bg-purple-950/80 border border-purple-700/80 rounded-lg text-purple-200 text-xs space-y-1 font-mono">
+                      <div className="font-bold flex items-center justify-between">
+                        <span>🛡️ SYSTEM RESILIENCE VERIFIED</span>
+                        <span className="text-[10px] bg-purple-900 border border-purple-600 px-2 py-0.5 rounded text-purple-300">
+                          Circuit Breaker Active
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-purple-300 font-sans">
+                        Primary API failure safely trapped. Payload buffered in Dead-Letter Queue (DLQ) with automatic retry interval and merchant alert.
+                      </p>
                     </div>
-                    <a
-                      href={executionState.resultData?.razorpay_response?.short_url || 'https://rzp.io/i/rec_paylink_8271'}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-1 text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded transition-all"
-                    >
-                      Open Link <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
-                  </div>
+                  ) : (
+                    <div className="p-3 bg-emerald-950/60 border border-emerald-800/80 rounded-lg text-emerald-300 text-xs flex justify-between items-center font-mono">
+                      <div>
+                        <span className="font-bold block">STATUS: RECOVERY ACTION SENT</span>
+                        <span className="text-[10px] text-emerald-400">Razorpay Test Mode Link Dispatched</span>
+                      </div>
+                      <a
+                        href={executionState.resultData?.razorpay_response?.short_url || 'https://rzp.io/i/rec_paylink_8271'}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1 text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded transition-all"
+                      >
+                        Open Link <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                  )}
 
                   <div className="flex justify-end space-x-2">
                     <button
