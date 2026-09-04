@@ -3,6 +3,9 @@ import { ShieldCheck, CheckCircle2, AlertCircle, DollarSign, Clock, ArrowRight, 
 
 export default function DecisionCenter({ caseData, onExecuteAction, onSelectCustomer, onNavigate }) {
   const [activeStory, setActiveStory] = useState('current'); // 'current' or 'non_action'
+  const [discountCapTinker, setDiscountCapTinker] = useState(100);
+  const [spacingDelayTinker, setSpacingDelayTinker] = useState(6);
+  const [showCodeShowcase, setShowCodeShowcase] = useState(false);
 
   const DEFAULT_CASE = {
     event: {
@@ -26,6 +29,9 @@ export default function DecisionCenter({ caseData, onExecuteAction, onSelectCust
 
   const activeCase = caseData || DEFAULT_CASE;
   const { event, evaluation } = activeCase;
+
+  const dynamicProb = Math.min(0.95, (evaluation?.natural_recovery_prob || 0.12) + (discountCapTinker / 1000) + 0.15);
+  const dynamicNet = Math.max(0, (event?.amount || 12500) * dynamicProb - 4.0 - discountCapTinker);
 
   const formatINR = (val) => {
     return new Intl.NumberFormat('en-IN', {
