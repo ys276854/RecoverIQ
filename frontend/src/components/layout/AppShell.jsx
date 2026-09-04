@@ -194,7 +194,7 @@ export default function AppShell({
 
       {/* 2. MAIN BRAND & NAVIGATION HEADER (Zero Overflow, Responsive Fit) */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs font-sans">
-        <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 py-2 flex items-center justify-between gap-2 overflow-hidden">
+        <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 py-2 flex items-center justify-between gap-2">
           {/* Brand Logo */}
           <div className="flex items-center space-x-1.5 shrink-0">
             <button
