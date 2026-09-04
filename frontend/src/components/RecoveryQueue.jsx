@@ -4,7 +4,7 @@ import { Zap, Clock, ShieldAlert, CheckCircle2 } from 'lucide-react';
 export default function RecoveryQueue({ queueData, onSelectCase, onExecuteAction }) {
   const DEFAULT_QUEUE = {
     act_now: [
-      { id: "LEAK_8271", order_id: "ORD-8271", customer_name: "Rahul Sharma", amount: 12500.0, optimal_action: "PAYMENT_LINK", optimal_einrv: 1840.0, age_minutes: 14 }
+      { id: "LEAK_8271", order_id: "ORD-8271", customer_name: "Rahul Sharma", amount: 12500.0, optimal_action: "PAYMENT_LINK", optimal_einrv: 9496.0, natural_recovery_prob: 0.12, age_minutes: 14 }
     ],
     wait: [
       { id: "LEAK_9014", order_id: "ORD-9014", customer_name: "Priya Verma", amount: 4200.0, optimal_action: "WAIT", optimal_einrv: 3717.0, age_minutes: 22 }

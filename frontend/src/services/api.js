@@ -68,7 +68,7 @@ const MOCK_LEAKS = [
     failure_reason: "Gateway Timeout (504)",
     age_minutes: 14,
     optimal_action: "PAYMENT_LINK",
-    optimal_einrv: 1840.0,
+    optimal_einrv: 9496.0,
     status: "READY"
   },
   {
@@ -127,10 +127,10 @@ function getMockResponse(endpoint, options = {}) {
     return {
       event: MOCK_LEAKS[0],
       evaluation: {
-        natural_recovery_prob: 0.586,
+        natural_recovery_prob: 0.12,
         actions_evaluated: [
-          { action: "PAYMENT_LINK", display_name: "Razorpay Payment Link", is_optimal: true, expected_net_value: 12611.0, recovery_probability: 0.88 },
-          { action: "WAIT", display_name: "WAIT (Organic)", is_optimal: false, expected_net_value: 11310.0, recovery_probability: 0.586 },
+          { action: "PAYMENT_LINK", display_name: "Razorpay Payment Link", is_optimal: true, expected_net_value: 9496.0, recovery_probability: 0.88 },
+          { action: "WAIT", display_name: "WAIT (Organic)", is_optimal: false, expected_net_value: 1500.0, recovery_probability: 0.12 },
           { action: "BLOCK", display_name: "Margin Discount Block", is_optimal: false, expected_net_value: 0.0, recovery_probability: 0.0 }
         ]
       }
@@ -147,7 +147,7 @@ function getMockResponse(endpoint, options = {}) {
         amount: 12500.0,
         natural_recovery_prob: 0.12,
         action: "PAYMENT_LINK",
-        einrv: 1840.0,
+        einrv: 9496.0,
         reason: "Low natural recovery probability (12%). Dispatching payment link yields optimal expected net recovery."
       },
       {
@@ -182,7 +182,7 @@ function getMockResponse(endpoint, options = {}) {
         entity_id: "#ORD-8271",
         customer_name: "Rahul Sharma",
         action_taken: "PAYMENT_LINK",
-        expected_net_value: 1840.0,
+        expected_net_value: 9496.0,
         status: "VERIFIED",
         reason: "Low natural recovery prob (12%). Sent payment link.",
         policy_check: "PASSED (Discount ≤ ₹500, Touches ≤ 2)",

@@ -20,7 +20,7 @@ export default function RevenueLeaks({ leaksData, onSelectCase }) {
     {
       id: "LEAK_8271", order_id: "ORD-8271", customer_id: "CUST_8812", customer_name: "Rahul Sharma", amount: 12500.0,
       category: "PAYMENT_FAILURE", payment_method: "CREDIT_CARD", failure_reason: "Gateway Timeout (504)", age_minutes: 14,
-      optimal_action: "PAYMENT_LINK", optimal_einrv: 1840.0, status: "READY"
+      optimal_action: "PAYMENT_LINK", optimal_einrv: 9496.0, natural_recovery_prob: 0.12, status: "READY"
     },
     {
       id: "LEAK_9014", order_id: "ORD-9014", customer_id: "CUST_9014", customer_name: "Priya Verma", amount: 4200.0,

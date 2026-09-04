@@ -208,7 +208,7 @@ export default function DecisionCenter({ caseData, onExecuteAction, onSelectCust
                 <div className="flex justify-between items-center text-emerald-400 font-bold border-b border-slate-800 pb-2">
                   <span>📐 ΔP × Value − Cost Formula (Rahul Sharma #LEAK_8271 Calculation)</span>
                   <span className="bg-emerald-950 text-emerald-300 text-[10px] px-2.5 py-0.5 rounded border border-emerald-700 font-mono">
-                    Net Yield = +₹1,840.00
+                    Net Yield = +₹9,496.00
                   </span>
                 </div>
 

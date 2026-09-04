@@ -197,10 +197,10 @@ export default function Overview({ overviewData, onNavigate, onSelectCase }) {
               <div className="text-[10px] text-slate-600 font-mono font-semibold">19 active leak events</div>
             </div>
 
-            <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/80 space-y-1">
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/80 space-y-1" title="58.6% is the overall merchant cohort-average organic baseline across all 12,483 transactions; individual case baselines vary by failure type, e.g. 12.0% for Gateway 504 timeouts vs 88.0% for mandate auth retries.">
               <div className="text-[10px] font-bold text-slate-700 uppercase tracking-wider font-mono">Natural Recovery</div>
               <div className="text-xl font-bold text-slate-900 num-tabular">{formatLakhs(natural_recovery_value)}</div>
-              <div className="text-[10px] text-slate-600 font-mono font-semibold">58.6% organic baseline</div>
+              <div className="text-[10px] text-slate-600 font-mono font-semibold">58.6% cohort-avg baseline</div>
             </div>
 
             <div 
