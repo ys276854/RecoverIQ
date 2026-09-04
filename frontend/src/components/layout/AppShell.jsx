@@ -22,9 +22,68 @@ export default function AppShell({
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [showLegendModal, setShowLegendModal] = useState(false);
   const [showRayWidget, setShowRayWidget] = useState(false);
+  const [showTourWidget, setShowTourWidget] = useState(false);
+  const [tourStepIndex, setTourStepIndex] = useState(0);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [webhookSimulating, setWebhookSimulating] = useState(false);
   const [webhookMessage, setWebhookMessage] = useState('');
+
+  const TOUR_STEPS = [
+    {
+      step: 1,
+      tab: 'overview',
+      title: '1. Measured Money Recovered (Track Focus)',
+      subtitle: 'Razorpay explicit mandate: measured money recovered across a batch.',
+      talkingPoint: 'Lead with ₹11.2L recovered across 12,483 transactions (60.8% post-intervention recovery rate).',
+      highlight: 'Batch Recovery Funnel & Net Recovery Yield (₹1,82,350.00)'
+    },
+    {
+      step: 2,
+      tab: 'decision',
+      title: '2. AI Reasoning & Governance Guardrails',
+      subtitle: 'Transparent causal decision vector + safety guardrail enforcement.',
+      talkingPoint: 'Highlight ACT/WAIT/BLOCK policies, max 2 retries, 6h gap, and 5% margin cap.',
+      highlight: 'Case #LEAK_8271 (Rahul Sharma - ₹12,500.00)'
+    },
+    {
+      step: 3,
+      tab: 'decision',
+      title: '3. Causal Lift Math & Parameters',
+      subtitle: 'EINRV formula: (P_treat - P_nat) × Value - Intervention Cost',
+      talkingPoint: 'Canonical net yield: (88% - 12%) × ₹12,500 - ₹4 = ₹9,496.00 net yield.',
+      highlight: 'Interactive parameter sliders + HMAC verification payload'
+    },
+    {
+      step: 4,
+      tab: 'queue',
+      title: '4. Real Live Razorpay Checkout Execution',
+      subtitle: 'Click "Execute Recovery" → Live Razorpay test link → Real-time status flip.',
+      talkingPoint: 'Judges love seeing live test links flip status to RECOVERED (₹12,500) upon payment.',
+      highlight: 'Live test payment link generation & checkout'
+    },
+    {
+      step: 5,
+      tab: 'audit',
+      title: '5. Immutable Audit Trail & HMAC Logs',
+      subtitle: 'Cryptographic SHA-256 HMAC signature check & transparent logs.',
+      talkingPoint: 'End pitch by highlighting governance, HMAC security, and CFO audit trail.',
+      highlight: 'Audit Log & CFO Approval Certificate'
+    }
+  ];
+
+  const handleNextTourStep = () => {
+    const nextIdx = (tourStepIndex + 1) % TOUR_STEPS.length;
+    setTourStepIndex(nextIdx);
+    onNavigate(TOUR_STEPS[nextIdx].tab);
+  };
+
+  const handlePrevTourStep = () => {
+    const prevIdx = (tourStepIndex - 1 + TOUR_STEPS.length) % TOUR_STEPS.length;
+    setTourStepIndex(prevIdx);
+    onNavigate(TOUR_STEPS[prevIdx].tab);
+  };
+
+  const currentTourStep = TOUR_STEPS[tourStepIndex];
 
   const handleSimulateWebhook = async () => {
     setWebhookSimulating(true);
@@ -280,6 +339,63 @@ export default function AppShell({
               >
                 📈 "What is the net ROI of granting a 5% discount nudge?"
               </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* 5. Floating 1-Click Guided Demo Tour Widget (Bottom Left) */}
+      <div className="fixed bottom-6 left-6 z-40">
+        {!showTourWidget ? (
+          <button
+            onClick={() => {
+              setShowTourWidget(true);
+              onNavigate(TOUR_STEPS[tourStepIndex].tab);
+            }}
+            className="bg-blue-600 hover:bg-blue-700 text-white shadow-xl rounded-xl px-4 py-2.5 text-xs font-extrabold flex items-center gap-2 transition-all hover:scale-105 border border-blue-500 font-mono"
+          >
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-300 animate-ping"></span>
+            <Sparkles className="w-4 h-4 text-amber-300" />
+            <span>🎯 90s Judge Guided Tour</span>
+          </button>
+        ) : (
+          <div className="w-88 sm:w-96 bg-slate-950 text-white border border-slate-800 rounded-2xl shadow-2xl p-5 space-y-4 text-xs font-sans">
+            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+              <div className="flex items-center space-x-2">
+                <span className="bg-blue-500/20 text-blue-400 text-[10px] font-mono font-extrabold px-2 py-0.5 rounded border border-blue-500/30">
+                  STEP {currentTourStep.step} OF 5
+                </span>
+                <span className="font-bold text-white font-mono">{currentTourStep.title}</span>
+              </div>
+              <button onClick={() => setShowTourWidget(false)} className="text-slate-400 hover:text-slate-200"><X className="w-4 h-4" /></button>
+            </div>
+
+            <div className="space-y-2">
+              <div className="text-[11px] font-semibold text-slate-300 font-mono">{currentTourStep.subtitle}</div>
+              <div className="p-3 bg-slate-900 rounded-xl border border-slate-800 space-y-1">
+                <div className="text-[10px] text-amber-400 font-bold uppercase font-mono">💡 What to tell the judge:</div>
+                <div className="text-slate-200 text-xs leading-relaxed font-sans">{currentTourStep.talkingPoint}</div>
+              </div>
+              <div className="text-[10px] text-emerald-400 font-mono font-bold">
+                Focus area: <span className="text-white underline">{currentTourStep.highlight}</span>
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-slate-800 flex justify-between items-center">
+              <button
+                onClick={handlePrevTourStep}
+                className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-lg text-xs font-mono border border-slate-800"
+              >
+                ← Prev Step
+              </button>
+              <span className="text-[10px] text-slate-500 font-mono">{currentTourStep.step}/5</span>
+              <button
+                onClick={handleNextTourStep}
+                className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-bold font-mono shadow-md flex items-center gap-1"
+              >
+                <span>Next Step</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
         )}

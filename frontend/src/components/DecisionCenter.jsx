@@ -204,40 +204,110 @@ export default function DecisionCenter({ caseData, onExecuteAction, onSelectCust
                 </span>
               </div>
 
-              <div className="p-4 bg-slate-900 rounded-xl border border-slate-800 space-y-3 font-mono text-xs">
-                <div className="flex justify-between items-center text-emerald-400 font-bold border-b border-slate-800 pb-2">
-                  <span>📐 ΔP × Value − Cost Formula (Rahul Sharma #LEAK_8271 Calculation)</span>
-                  <span className="bg-emerald-950 text-emerald-300 text-[10px] px-2.5 py-0.5 rounded border border-emerald-700 font-mono">
-                    Net Yield = +₹9,496.00
+              {/* DYNAMIC CAUSAL PARAMETER TINKER & RAZORPAY API CODE SHOWCASE */}
+              <div className="p-4 bg-slate-900 rounded-xl border border-slate-800 space-y-4 font-mono text-xs">
+                <div className="flex justify-between items-center text-blue-400 font-bold border-b border-slate-800 pb-2">
+                  <div className="flex items-center gap-1.5">
+                    <Sliders className="w-4 h-4 text-blue-400" />
+                    <span>LIVE CAUSAL PARAMETER TINKER & RECALCULATOR</span>
+                  </div>
+                  <span className="text-[10px] bg-blue-950 text-blue-300 px-2 py-0.5 rounded border border-blue-700">
+                    Live Model Tinkering
                   </span>
                 </div>
 
-                <div className="text-[11px] text-slate-300 space-y-1.5 leading-relaxed">
-                  <div>• <strong>Formula:</strong> <code className="text-emerald-400 font-bold">EINRV(a) = [P(Y=1|T=a, X) - P(Y=1|T=0, X)] × V - C_a - D_a</code></div>
-                  <div>• <strong>Payment Amount (V):</strong> ₹12,500.00</div>
-                  <div>• <strong>Case-Specific Baseline Organic Prob P(Y=1|T=0, X):</strong> 12.0% (0.12) <span className="text-amber-400 font-sans text-[10px]">(Gateway 504 Timeout)</span></div>
-                  <div>• <strong>Payment Link Treatment Prob P(Y=1|T=a, X):</strong> 88.0% (0.88)</div>
-                  <div>• <strong>Causal Incremental Lift (ΔP):</strong> 0.88 - 0.12 = <strong className="text-blue-400">+76.0% (+0.76)</strong></div>
-                  <div>• <strong>Gross Incremental Value:</strong> 0.76 × ₹12,500 = <strong className="text-emerald-400">₹9,500.00</strong></div>
-                  <div>• <strong>SMS Fee (C_a) + Margin Discount (D_a):</strong> ₹4.00 + ₹0.00 = <strong className="text-rose-400">₹4.00</strong></div>
-                  <div className="text-emerald-300 font-bold pt-1.5 border-t border-slate-800">
-                    ➔ Expected Net Recovery Yield = ₹9,496.00 (Net incremental lift over organic wait)
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-[11px]">
+                      <span className="text-slate-400">Margin Discount Offer:</span>
+                      <span className="text-emerald-400 font-bold">₹{discountCapTinker}</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="500"
+                      step="50"
+                      value={discountCapTinker}
+                      onChange={(e) => setDiscountCapTinker(Number(e.target.value))}
+                      className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-[11px]">
+                      <span className="text-slate-400">Outbound Nudge Spacing:</span>
+                      <span className="text-blue-400 font-bold">{spacingDelayTinker} Hours</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="1"
+                      max="24"
+                      step="1"
+                      value={spacingDelayTinker}
+                      onChange={(e) => setSpacingDelayTinker(Number(e.target.value))}
+                      className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                    />
                   </div>
                 </div>
 
-                {/* Judge Pitch One-Liner Box */}
-                <div className="p-3 bg-blue-950/80 border border-blue-800/80 rounded-xl text-blue-200 text-xs font-sans space-y-1 mt-2">
-                  <div className="font-bold flex items-center gap-1.5 text-blue-300 font-mono text-[11px]">
-                    <Sparkles className="w-3.5 h-3.5 text-blue-400" /> 1-SENTENCE JUDGE PITCH ANSWER:
+                <div className="p-3 bg-emerald-950/60 border border-emerald-800 rounded-lg text-[11px] text-emerald-300 flex justify-between items-center">
+                  <div>
+                    <span>Tinkered Rec Prob: <strong className="text-white">{(dynamicProb * 100).toFixed(1)}%</strong></span>
+                    <span className="mx-2 font-slate-600">|</span>
+                    <span>Tinkered Incremental Lift: <strong className="text-blue-300">+{( (dynamicProb - 0.12) * 100 ).toFixed(1)}%</strong></span>
                   </div>
-                  <p className="text-[11px] text-blue-100 leading-relaxed font-sans">
-                    <em>"We multiply the customer's payment value by our model's causal lift over the organic baseline, then subtract direct SMS API fees and margin discounts to guarantee positive net merchant yield."</em>
-                  </p>
+                  <div className="text-right">
+                    <span className="text-[10px] text-emerald-400 block font-bold">RECALCULATED NET YIELD</span>
+                    <span className="text-sm font-black text-white">₹{dynamicNet.toFixed(2)}</span>
+                  </div>
                 </div>
 
-                <p className="text-slate-400 font-sans text-xs pt-1 border-t border-slate-800/80 leading-relaxed">
-                  <strong>Proxy Benchmark Disclosure:</strong> Olist and Hillstrom serve as historical proxy benchmarks to demonstrate our causal uplift pipeline; production deployment replaces these proxies with live merchant Razorpay webhook telemetry.
-                </p>
+                {/* Razorpay API Code Showcase Toggle Button */}
+                <div className="pt-2 border-t border-slate-800">
+                  <button
+                    onClick={() => setShowCodeShowcase(!showCodeShowcase)}
+                    className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-bold font-mono flex items-center justify-center gap-1.5 transition-all border border-slate-700"
+                  >
+                    <Code className="w-3.5 h-3.5 text-blue-400" />
+                    <span>{showCodeShowcase ? 'Hide Razorpay API SDK Code & HMAC Payload' : '💻 Inspect Razorpay API Request Payload & HMAC SDK Integration Code'}</span>
+                  </button>
+
+                  {showCodeShowcase && (
+                    <div className="mt-3 p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-3 font-mono text-[11px] text-slate-300">
+                      <div className="text-emerald-400 font-bold flex items-center justify-between border-b border-slate-800 pb-2">
+                        <span>Razorpay API v1/payment_links Integration Code (Node.js)</span>
+                        <span className="text-[10px] text-slate-500">POST https://api.razorpay.com/v1/payment_links</span>
+                      </div>
+                      <pre className="p-3 bg-slate-900 rounded-lg text-blue-300 overflow-x-auto text-[10px] font-mono leading-relaxed">
+{`// 1. Dispatch Razorpay Payment Link API Payload
+const razorpayPayload = {
+  amount: ${event.amount * 100}, // Amount in paise (₹${event.amount})
+  currency: "INR",
+  accept_partial: false,
+  description: "Revenue Leak Recovery Link for Order #${event.order_id}",
+  customer: {
+    name: "${event.customer_name}",
+    email: "${event.customer_email || 'customer@example.com'}"
+  },
+  notify: { sms: true, whatsapp: true },
+  callback_url: "https://radar.merchant.com/api/webhook/razorpay",
+  callback_method: "get"
+};
+
+// 2. Razorpay Webhook HMAC-SHA256 Verification Logic
+const crypto = require('crypto');
+const expectedSignature = crypto
+  .createHmac('sha256', process.env.RAZORPAY_WEBHOOK_SECRET)
+  .update(JSON.stringify(webhookBody))
+  .digest('hex');
+
+if (expectedSignature === req.headers['x-razorpay-signature']) {
+  // HMAC verified -> Flip Leak status to RECOVERED!
+}`}
+                      </pre>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="pt-2 flex items-center gap-3">

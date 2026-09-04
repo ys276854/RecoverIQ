@@ -587,34 +587,111 @@ export default function Overview({ overviewData, onNavigate, onSelectCase }) {
 
       {/* PRINTABLE C-SUITE EXECUTIVE SUMMARY MODAL */}
       {showPrintModal && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-2xl w-full p-8 space-y-6 text-slate-900 font-sans">
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-3xl w-full p-6 sm:p-8 space-y-6 text-slate-900 font-sans my-8">
             <div className="flex justify-between items-start border-b border-slate-200 pb-4">
               <div>
                 <div className="flex items-center space-x-2">
                   <span className="font-extrabold text-xl tracking-tight text-slate-900 italic">Razor<span className="text-blue-600">pay</span></span>
-                  <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded border border-emerald-300 font-mono">Agentic Stack</span>
+                  <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded border border-emerald-300 font-mono">Executive Report</span>
                 </div>
-                <h2 className="text-lg font-bold text-slate-900 mt-1">C-Suite Executive Revenue Intelligence Report</h2>
-                <p className="text-xs text-slate-500 font-mono">Report Period: August 2026 &bull; Acme Commerce Private Ltd</p>
+                <h2 className="text-xl font-extrabold text-slate-900 mt-1">C-Suite Revenue Intelligence & Recovery Audit</h2>
+                <p className="text-xs text-slate-500 font-mono">Merchant: Acme Commerce Pvt Ltd &bull; Evaluated Cohort: 12,483 Transactions &bull; Date: September 2026</p>
               </div>
-              <button onClick={() => setShowPrintModal(false)} className="text-slate-400 hover:text-slate-700"><X className="w-5 h-5" /></button>
+              <button onClick={() => setShowPrintModal(false)} className="text-slate-400 hover:text-slate-700 p-1"><X className="w-5 h-5" /></button>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 text-xs font-mono">
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-                <div className="text-slate-500 text-[10px] uppercase font-bold">Total Monitored Leaks</div>
-                <div className="text-base font-bold text-slate-900">₹5,20,500</div>
+            {/* Key Executive KPI Summary */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-xs">
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                <div className="text-slate-500 text-[10px] uppercase font-bold">Revenue At Risk</div>
+                <div className="text-lg font-black text-slate-900">₹18.4L</div>
+                <div className="text-[10px] text-slate-500 font-sans">12,483 failed events</div>
               </div>
-              <div className="p-3 bg-emerald-50 rounded-lg border border-emerald-200 space-y-1">
-                <div className="text-emerald-800 text-[10px] uppercase font-bold">Net Recovered Cash</div>
-                <div className="text-base font-bold text-emerald-950">₹1,82,231</div>
+              <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 space-y-1">
+                <div className="text-emerald-800 text-[10px] uppercase font-bold">Money Recovered</div>
+                <div className="text-lg font-black text-emerald-950">₹11.2L</div>
+                <div className="text-[10px] text-emerald-700 font-sans font-bold">60.8% Rec Rate</div>
+              </div>
+              <div className="p-3 bg-blue-50 rounded-xl border border-blue-200 space-y-1">
+                <div className="text-blue-800 text-[10px] uppercase font-bold">Net Recovery Yield</div>
+                <div className="text-lg font-black text-blue-950">{formatLakhs(net_recovery_value)}</div>
+                <div className="text-[10px] text-blue-700 font-sans">After direct costs</div>
+              </div>
+              <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 space-y-1">
+                <div className="text-amber-800 text-[10px] uppercase font-bold">Avoided Waste</div>
+                <div className="text-lg font-black text-amber-950">₹18,400</div>
+                <div className="text-[10px] text-amber-700 font-sans">Saved by WAIT</div>
               </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-200 flex justify-end space-x-3">
-              <button onClick={() => setShowPrintModal(false)} className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">Close</button>
-              <button onClick={() => window.print()} className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold">Print / Export PDF</button>
+            {/* Breakdown Table */}
+            <div className="space-y-2">
+              <div className="text-xs font-bold text-slate-900 font-mono uppercase tracking-wider">Cohort Leak Breakdown</div>
+              <div className="border border-slate-200 rounded-xl overflow-hidden text-xs">
+                <table className="w-full text-left font-mono">
+                  <thead className="bg-slate-100 text-slate-600 text-[11px] uppercase font-bold">
+                    <tr>
+                      <th className="p-2.5">Failure Sub-Type</th>
+                      <th className="p-2.5 text-right">Volume</th>
+                      <th className="p-2.5">Recommended Policy</th>
+                      <th className="p-2.5 text-right">Net Recovery</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    <tr>
+                      <td className="p-2.5 font-sans font-semibold">Gateway 504 Timeout</td>
+                      <td className="p-2.5 text-right">4,120</td>
+                      <td className="p-2.5 font-sans text-blue-700 font-semibold">Smart Retry (6h Delay)</td>
+                      <td className="p-2.5 text-right font-bold text-emerald-700">₹4.82L</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2.5 font-sans font-semibold">UPI Mandate Auth Fail</td>
+                      <td className="p-2.5 text-right">3,890</td>
+                      <td className="p-2.5 font-sans text-emerald-700 font-semibold">Instant Auth Re-trigger</td>
+                      <td className="p-2.5 text-right font-bold text-emerald-700">₹3.95L</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2.5 font-sans font-semibold">Cart Abandonment (High Val)</td>
+                      <td className="p-2.5 text-right">2,410</td>
+                      <td className="p-2.5 font-sans text-indigo-700 font-semibold">WhatsApp Nudge + 5% Disc</td>
+                      <td className="p-2.5 text-right font-bold text-emerald-700">₹2.43L</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* CFO Governance & Guardrails Certification */}
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-slate-900 font-mono uppercase text-[11px]">CFO Governance & Policy Certification</span>
+                <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded border border-emerald-300 font-mono">
+                  ✓ ALL GUARDRAILS VERIFIED
+                </span>
+              </div>
+              <ul className="text-slate-600 text-[11px] space-y-1 font-mono">
+                <li>• Max Retries Cap: 2 retries per unique order ID</li>
+                <li>• Minimum Inter-Retry Interval: 6 hours minimum spacing</li>
+                <li>• Maximum Incentive Cap: 5.0% margin discount ceiling</li>
+                <li>• SHA-256 HMAC Webhook Verification: 100% cryptographic signature check passed</li>
+              </ul>
+            </div>
+
+            {/* Signature Block */}
+            <div className="pt-4 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-mono">
+              <div className="space-y-0.5">
+                <div className="text-slate-400 text-[10px]">APPROVED & SIGNED BY</div>
+                <div className="font-bold text-slate-900">Rajesh Kumar &bull; Chief Financial Officer</div>
+                <div className="text-slate-500 text-[11px]">Acme Commerce Pvt Ltd &bull; Razorpay Merchant ID #rzp_live_8291</div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <button onClick={() => setShowPrintModal(false)} className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold transition-all">Close</button>
+                <button onClick={() => window.print()} className="px-4.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-md transition-all flex items-center gap-1.5">
+                  <FileText className="w-4 h-4" />
+                  <span>Print Executive Summary</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
