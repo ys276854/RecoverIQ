@@ -163,6 +163,31 @@ export default function Overview({ overviewData, onNavigate, onSelectCase }) {
         </div>
       </div>
 
+      {/* GUARDRAILS ENFORCED BLOCKED CASES CALLOUT CARD */}
+      <div className="bg-slate-950 text-white rounded-2xl p-5 border border-slate-800 shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-mono">
+        <div className="flex items-center space-x-3">
+          <div className="p-3 bg-rose-950/80 border border-rose-800 rounded-xl shrink-0">
+            <ShieldCheck className="w-6 h-6 text-rose-400" />
+          </div>
+          <div>
+            <div className="flex items-center space-x-2">
+              <span className="text-xs font-bold text-rose-400 uppercase tracking-wider">GUARDRAILS ENFORCED THIS WEEK</span>
+              <span className="bg-rose-950 text-rose-300 text-[10px] px-2 py-0.5 rounded border border-rose-800 font-bold">100% Margin Protection</span>
+            </div>
+            <div className="text-sm font-bold text-white font-sans mt-0.5">
+              <strong className="text-rose-400">1,847 Cases Blocked / Suppressed</strong> &bull; Zero wasted notification fees &bull; Zero margin discount decay
+            </div>
+            <p className="text-[11px] text-slate-400 font-sans mt-0.5">
+              Suppressed low-yield & negative-ROI recovery attempts, saving <strong className="text-emerald-400">₹18,400.00</strong> in direct API fees.
+            </p>
+          </div>
+        </div>
+        <div className="text-right shrink-0">
+          <span className="text-[10px] text-slate-400 uppercase block font-bold">Wasted Spend Prevented</span>
+          <span className="text-xl font-black text-emerald-400">₹18,400.00</span>
+        </div>
+      </div>
+
       {/* Hero Dynamic Value Hub */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none"></div>

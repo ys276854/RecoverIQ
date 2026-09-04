@@ -112,47 +112,56 @@ export default function Settings() {
             <p className="text-[13px] text-slate-500 font-normal mt-0.5 font-sans">Protect order unit economics and outbound messaging budgets</p>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4 font-sans">
             <div>
-              <label className="text-[14px] font-medium text-slate-700 block mb-1.5 font-sans">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 font-mono block mb-1">
                 Maximum Per-Order Discount Cap (₹)
               </label>
-              <input
-                type="number"
-                value={guardrails.max_discount_amount}
-                onChange={(e) => handleNumberChange('max_discount_amount', e.target.value)}
-                className="w-full text-[15px] font-normal p-2.5 border border-slate-300 rounded-lg font-sans focus:outline-none focus:ring-1 focus:ring-blue-600"
-              />
-              <span className="text-[13px] font-normal text-slate-500 mt-1 block font-sans">
+              <div className="relative">
+                <span className="absolute left-3 top-2.5 text-slate-400 font-extrabold text-base">₹</span>
+                <input
+                  type="number"
+                  value={guardrails.max_discount_amount}
+                  onChange={(e) => handleNumberChange('max_discount_amount', e.target.value)}
+                  className="w-full text-lg font-extrabold text-slate-900 pl-7 p-2.5 border border-slate-300 rounded-lg font-sans focus:outline-none focus:ring-2 focus:ring-blue-600 shadow-2xs"
+                />
+              </div>
+              <span className="text-[12px] font-normal text-slate-500 mt-1 block font-sans">
                 Interventions offering discounts above this amount will be automatically blocked.
               </span>
             </div>
 
             <div>
-              <label className="text-[14px] font-medium text-slate-700 block mb-1.5 font-sans">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 font-mono block mb-1">
                 Maximum Intervention Cost / Order (₹)
               </label>
-              <input
-                type="number"
-                value={guardrails.max_intervention_cost}
-                onChange={(e) => handleNumberChange('max_intervention_cost', e.target.value)}
-                className="w-full text-[15px] font-normal p-2.5 border border-slate-300 rounded-lg font-sans focus:outline-none focus:ring-1 focus:ring-blue-600"
-              />
-              <span className="text-[13px] font-normal text-slate-500 mt-1 block font-sans">
+              <div className="relative">
+                <span className="absolute left-3 top-2.5 text-slate-400 font-extrabold text-base">₹</span>
+                <input
+                  type="number"
+                  value={guardrails.max_intervention_cost}
+                  onChange={(e) => handleNumberChange('max_intervention_cost', e.target.value)}
+                  className="w-full text-lg font-extrabold text-slate-900 pl-7 p-2.5 border border-slate-300 rounded-lg font-sans focus:outline-none focus:ring-2 focus:ring-blue-600 shadow-2xs"
+                />
+              </div>
+              <span className="text-[12px] font-normal text-slate-500 mt-1 block font-sans">
                 Caps SMS/WhatsApp API spending per recovery attempt.
               </span>
             </div>
 
             <div>
-              <label className="text-[14px] font-medium text-slate-700 block mb-1.5 font-sans">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 font-mono block mb-1">
                 Daily Outbound Recovery Budget Cap (₹)
               </label>
-              <input
-                type="number"
-                value={guardrails.daily_budget_cap}
-                onChange={(e) => handleNumberChange('daily_budget_cap', e.target.value)}
-                className="w-full text-[15px] font-normal p-2.5 border border-slate-300 rounded-lg font-sans focus:outline-none focus:ring-1 focus:ring-blue-600"
-              />
+              <div className="relative">
+                <span className="absolute left-3 top-2.5 text-slate-400 font-extrabold text-base">₹</span>
+                <input
+                  type="number"
+                  value={guardrails.daily_budget_cap}
+                  onChange={(e) => handleNumberChange('daily_budget_cap', e.target.value)}
+                  className="w-full text-lg font-extrabold text-slate-900 pl-7 p-2.5 border border-slate-300 rounded-lg font-sans focus:outline-none focus:ring-2 focus:ring-blue-600 shadow-2xs"
+                />
+              </div>
             </div>
           </div>
         </div>

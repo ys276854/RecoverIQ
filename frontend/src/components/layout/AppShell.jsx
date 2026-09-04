@@ -108,12 +108,15 @@ export default function AppShell({
     }
   };
 
-  const navItems = [
+  const navItemsPrimary = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
     { id: 'leaks', label: 'Revenue Leaks', icon: Search },
     { id: 'queue', label: 'Recovery Queue', icon: Zap },
     { id: 'decision', label: 'Decision Center', icon: ShieldCheck },
-    { id: 'simulator', label: 'Simulator', icon: TestTube },
+    { id: 'simulator', label: 'Simulator', icon: TestTube }
+  ];
+
+  const navItemsSecondary = [
     { id: 'customer', label: 'Customers', icon: User },
     { id: 'experiments', label: 'Experiments', icon: TestTube },
     { id: 'audit', label: 'Audit Trail', icon: FileText },
@@ -122,71 +125,68 @@ export default function AppShell({
 
   return (
     <div className="min-h-screen flex flex-col font-sans text-slate-900 bg-slate-50 selection:bg-blue-100 selection:text-blue-900 pb-24">
-      {/* 1. SINGLE CONSOLIDATED 44PX UTILITY HEADER (Dark Acrylic Glass) */}
-      <div className="bg-[#090D16] text-slate-200 border-b border-slate-800 px-4 sm:px-8 py-2 min-h-[44px] flex flex-wrap items-center justify-between gap-3 shadow-md font-mono select-none text-xs z-40">
-        {/* Left Side: Brand Badges + Latency Pill + App Store Active Badge */}
-        <div className="flex items-center space-x-3 text-slate-300">
-          <span className="font-bold text-white font-sans text-xs tracking-tight">Razorpay Autonomous Leak Radar</span>
-          <span className="inline-flex items-center gap-1 bg-blue-950 text-blue-300 px-2 py-0.5 rounded border border-blue-800 text-[10px] font-bold">
-            <Cpu className="w-3 h-3 text-blue-400" /> 18ms Latency
+      {/* 1. SLEEK 36PX STATUS & TELEMETRY RIBBON (Dark Acrylic) */}
+      <div className="bg-[#090D16] text-slate-300 border-b border-slate-800/90 px-4 sm:px-6 py-1.5 min-h-[36px] flex items-center justify-between gap-2 shadow-xs font-mono text-[11px] z-40 select-none">
+        {/* Left: Compact Consolidated Telemetry Pill */}
+        <div className="flex items-center space-x-2.5">
+          <span className="inline-flex items-center gap-1.5 bg-blue-950/80 text-blue-300 px-2 py-0.5 rounded border border-blue-800/60 font-bold">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Razorpay Autonomous Radar &bull; 18ms Latency &bull; App Store Active</span>
           </span>
-          <span className="inline-flex items-center gap-1 bg-emerald-950/80 text-emerald-300 px-2 py-0.5 rounded border border-emerald-800 text-[10px] font-bold">
-            <ShieldCheck className="w-3 h-3 text-emerald-400" /> Razorpay Dashboard App Store: ACTIVE
-          </span>
-          <span className="text-slate-400 hidden xl:inline text-[11px]">
+          <span className="text-slate-500 hidden xl:inline">
             Causal Engine (ΔP × Value - Cost)
           </span>
         </div>
 
-        {/* Right Side: Presets Segmented Buttons + Webhook Trigger + Key Shortcut */}
-        <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+        {/* Right: Presets + Webhook Trigger + Shortcut */}
+        <div className="flex items-center space-x-2">
           {webhookMessage ? (
             <span className="text-emerald-400 font-bold text-[11px] animate-pulse">✓ {webhookMessage}</span>
           ) : (
             <button
               onClick={handleSimulateWebhook}
               disabled={webhookSimulating}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 border border-emerald-500/40 transition-all text-xs font-bold shadow-xs"
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 border border-emerald-500/40 text-[11px] font-bold transition-all shadow-xs"
               title="Simulate incoming Razorpay payment.failed webhook payload"
             >
-              <Radio className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+              <Radio className="w-3 h-3 text-emerald-400 animate-pulse" />
               <span>{webhookSimulating ? 'Ingesting...' : '⚡ Webhook Simulator'}</span>
             </button>
           )}
 
-          {/* Compact Segmented Controls */}
-          <div className="inline-flex rounded-lg bg-slate-900 border border-slate-800 p-0.5">
+          {/* Compact Presets Segmented Bar */}
+          <div className="hidden sm:inline-flex rounded bg-slate-900 border border-slate-800 p-0.5">
             <button
               onClick={() => onTriggerDemo('CASE_1_ACT')}
-              className="px-2.5 py-0.5 rounded text-[11px] font-semibold text-blue-300 hover:bg-blue-600/30 hover:text-white transition-all flex items-center gap-1"
+              className="px-2 py-0.5 rounded text-[10px] font-bold text-blue-300 hover:bg-blue-600/30 hover:text-white transition-all flex items-center gap-1"
             >
               <Zap className="w-3 h-3 text-blue-400" /> Act Now
             </button>
             <button
               onClick={() => onTriggerDemo('CASE_2_WAIT')}
-              className="px-2.5 py-0.5 rounded text-[11px] font-semibold text-amber-300 hover:bg-amber-600/30 hover:text-white transition-all flex items-center gap-1 border-l border-slate-800"
+              className="px-2 py-0.5 rounded text-[10px] font-bold text-amber-300 hover:bg-amber-600/30 hover:text-white transition-all flex items-center gap-1 border-l border-slate-800"
             >
               <PauseCircle className="w-3 h-3 text-amber-400" /> Wait
             </button>
             <button
               onClick={() => onTriggerDemo('CASE_3_STOP')}
-              className="px-2.5 py-0.5 rounded text-[11px] font-semibold text-rose-300 hover:bg-rose-600/30 hover:text-white transition-all flex items-center gap-1 border-l border-slate-800"
+              className="px-2 py-0.5 rounded text-[10px] font-bold text-rose-300 hover:bg-rose-600/30 hover:text-white transition-all flex items-center gap-1 border-l border-slate-800"
             >
               <Ban className="w-3 h-3 text-rose-400" /> Block
             </button>
           </div>
 
-          <span className="bg-slate-900 text-slate-400 px-2 py-0.5 rounded text-[10px] border border-slate-800 hidden md:inline-flex items-center gap-1">
-            <Command className="w-3 h-3" /> Ctrl+Shift+D
+          <span className="bg-slate-900 text-slate-400 px-1.5 py-0.5 rounded text-[10px] border border-slate-800 hidden lg:inline-flex items-center gap-0.5">
+            <Command className="w-2.5 h-2.5" /> Ctrl+Shift+D
           </span>
         </div>
       </div>
 
-      {/* 2. SINGLE CLEAN WHITE NAVBAR WITH PROPER HORIZONTAL PADDING (px-8, NO CLIPPING) */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3 flex items-center justify-between gap-4">
-          {/* Logo & Brand Title */}
-          <div className="flex items-center space-x-3 shrink-0">
+      {/* 2. MAIN BRAND & NAVIGATION HEADER (Zero Overflow, Crisp Text Labels) */}
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs font-sans">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between gap-3">
+          {/* Brand Logo */}
+          <div className="flex items-center space-x-2.5 shrink-0">
             <button
               onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
               className="lg:hidden p-1 rounded text-slate-600 hover:bg-slate-100"
@@ -194,24 +194,43 @@ export default function AppShell({
               <Menu className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center space-x-2.5 cursor-pointer" onClick={() => onNavigate('overview')}>
-              <div className="flex items-center space-x-1.5">
-                <span className="font-extrabold text-xl tracking-tight text-slate-900 font-sans italic">
-                  Razor<span className="text-blue-600">pay</span>
-                </span>
-                <span className="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded border border-emerald-300 font-mono">
-                  Agentic Stack
-                </span>
-              </div>
-              <div className="hidden md:flex items-center space-x-1.5 pl-3 border-l border-slate-200">
-                <span className="text-xs font-bold text-slate-600 font-mono tracking-tight">LEAK RADAR</span>
-              </div>
+            <div className="flex items-center space-x-2 cursor-pointer" onClick={() => onNavigate('overview')}>
+              <span className="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 font-sans italic">
+                Razor<span className="text-blue-600">pay</span>
+              </span>
+              <span className="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded border border-emerald-300 font-mono">
+                Agentic Stack
+              </span>
+              <span className="hidden md:inline text-xs font-bold text-slate-500 font-mono pl-2 border-l border-slate-200">
+                LEAK RADAR
+              </span>
             </div>
           </div>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center space-x-1 overflow-x-auto py-0.5">
-            {navItems.map((item) => {
+          {/* Desktop Navigation Links (Primary + Secondary Grouping, Crisp Zero Truncation) */}
+          <nav className="hidden lg:flex items-center space-x-1 font-sans">
+            {navItemsPrimary.map((item) => {
+              const Icon = item.icon;
+              const isActive = currentTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => onNavigate(item.id)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all whitespace-nowrap ${
+                    isActive
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                  }`}
+                >
+                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-slate-500'}`} />
+                  <span>{item.label}</span>
+                </button>
+              );
+            })}
+
+            <div className="w-px h-5 bg-slate-200 mx-1" />
+
+            {navItemsSecondary.map((item) => {
               const Icon = item.icon;
               const isActive = currentTab === item.id;
               return (
@@ -220,45 +239,36 @@ export default function AppShell({
                   onClick={() => onNavigate(item.id)}
                   className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all whitespace-nowrap ${
                     isActive
-                      ? 'bg-blue-50 text-blue-700 border border-blue-200/80 shadow-2xs'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-blue-600' : 'text-slate-400'}`} />
+                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                   <span>{item.label}</span>
                 </button>
               );
             })}
           </nav>
 
-          {/* Right Side: Tenant Switcher & Profile Button (Zero Overflow) */}
-          <div className="flex items-center space-x-2 sm:space-x-3 text-xs shrink-0">
+          {/* Right Side: Merchant Info & Account Controls */}
+          <div className="flex items-center space-x-2 text-xs shrink-0 font-sans">
             <span className="hidden xl:inline-flex items-center gap-1 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-md text-slate-800 font-mono text-[11px] font-bold">
-              🏢 {user?.business_name || 'Acme Commerce Pvt Ltd'}
+              🏢 {user?.business_name || 'Acme Commerce India'}
             </span>
-
-            <button
-              onClick={onLogout}
-              className="bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 font-bold text-xs px-3 py-1.5 rounded-lg shadow-2xs flex items-center gap-1.5 transition-all"
-              title="Sign out to return to the Login Page"
-            >
-              <LogOut className="w-3.5 h-3.5 text-slate-500" />
-              <span>Login Page</span>
-            </button>
 
             <div className="relative">
               <button
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg shadow-sm flex items-center gap-1.5 transition-all"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg shadow-2xs flex items-center gap-1 transition-all"
               >
-                <span className="truncate max-w-[140px]">{user?.full_name || 'Merchant Console'}</span>
+                <span className="truncate max-w-[140px]">{user?.full_name || 'Demo Merchant Admin'}</span>
                 <ChevronRight className="w-3.5 h-3.5 shrink-0" />
               </button>
 
               {showProfileMenu && (
                 <div className="absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-xl shadow-xl p-1 text-xs space-y-0.5 z-40">
                   <div className="p-2.5 border-b border-slate-100 font-mono">
-                    <div className="font-bold text-slate-900">{user?.full_name || 'Admin'}</div>
+                    <div className="font-bold text-slate-900">{user?.full_name || 'Demo Merchant Admin'}</div>
                     <div className="text-[10px] text-slate-500 truncate">{user?.email || 'demo@acmecommerce.in'}</div>
                   </div>
                   <button
@@ -276,13 +286,22 @@ export default function AppShell({
                 </div>
               )}
             </div>
+
+            <button
+              onClick={onLogout}
+              className="bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 font-bold text-xs px-2.5 py-1.5 rounded-lg shadow-2xs flex items-center gap-1 transition-all"
+              title="Sign out to return to the Login Page"
+            >
+              <LogOut className="w-3.5 h-3.5 text-slate-500" />
+              <span className="hidden sm:inline">Logout</span>
+            </button>
           </div>
         </div>
 
         {/* Mobile Navigation Drawer */}
         {mobileSidebarOpen && (
           <div className="lg:hidden border-t border-slate-200 bg-slate-50 p-3 space-y-1">
-            {navItems.map((item) => (
+            {[...navItemsPrimary, ...navItemsSecondary].map((item) => (
               <button
                 key={item.id}
                 onClick={() => { onNavigate(item.id); setMobileSidebarOpen(false); }}

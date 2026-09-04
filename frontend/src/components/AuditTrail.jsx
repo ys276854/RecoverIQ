@@ -59,48 +59,48 @@ export default function AuditTrail() {
       <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs text-slate-700">
-            <thead className="bg-slate-50 border-b border-slate-200/80">
+            <thead className="bg-slate-100/90 border-b border-slate-200">
               <tr>
-                <th className="p-3.5 typo-table-header font-mono">Timestamp</th>
-                <th className="p-3.5 typo-table-header font-mono">Entity ID</th>
-                <th className="p-3.5 typo-table-header">Customer</th>
-                <th className="p-3.5 typo-table-header">Action Taken</th>
-                <th className="p-3.5 typo-table-header">Decision Rationale & Rules</th>
-                <th className="p-3.5 typo-table-header">Policy Check</th>
-                <th className="p-3.5 typo-table-header text-right">Expected Net</th>
-                <th className="p-3.5 typo-table-header text-center">Actual Outcome</th>
-                <th className="p-3.5 typo-table-header text-center">Audit Status</th>
+                <th className="p-3.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 font-mono">Timestamp</th>
+                <th className="p-3.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 font-mono">Entity ID</th>
+                <th className="p-3.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 font-sans">Customer</th>
+                <th className="p-3.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 font-sans">Action Taken</th>
+                <th className="p-3.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 font-sans">Decision Rationale & Rules</th>
+                <th className="p-3.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 font-sans">Policy Check</th>
+                <th className="p-3.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 font-sans text-right">Expected Net</th>
+                <th className="p-3.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 font-sans text-center">Actual Outcome</th>
+                <th className="p-3.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 font-sans text-center">Audit Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-sans">
               {(Array.isArray(logs) ? logs : []).map((log) => (
                 <tr key={log.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="p-3.5 typo-customer-metadata font-mono">{log.timestamp}</td>
-                  <td className="p-3.5 font-semibold text-slate-900 font-mono">{log.entity_id}</td>
-                  <td className="p-3.5 typo-customer-name">{log.customer_name}</td>
+                  <td className="p-3.5 text-slate-500 font-mono text-[11px]">{log.timestamp}</td>
+                  <td className="p-3.5 font-bold text-slate-900 font-mono text-xs">{log.entity_id}</td>
+                  <td className="p-3.5 font-semibold text-slate-900 text-xs">{log.customer_name}</td>
                   <td className="p-3.5">
-                    <span className="bg-blue-50 text-blue-800 border border-blue-200 px-2.5 py-0.5 rounded-md typo-badge inline-block">
+                    <span className="bg-blue-50 text-blue-900 border border-blue-200 px-2.5 py-0.5 rounded-md text-[11px] font-bold font-mono inline-block">
                       {log.action_taken.replace('_', ' ')}
                     </span>
                   </td>
-                  <td className="p-3.5 text-slate-600 max-w-xs text-[12px] leading-relaxed">
+                  <td className="p-3.5 text-slate-700 max-w-xs text-[12px] leading-relaxed">
                     {log.reason}
                   </td>
                   <td className="p-3.5 text-[12px]">
-                    <span className="text-emerald-700 font-semibold">{log.policy_check}</span>
+                    <span className="text-emerald-700 font-bold">{log.policy_check}</span>
                   </td>
-                  <td className="p-3.5 text-right typo-amount text-emerald-700">
+                  <td className="p-3.5 text-right font-extrabold text-sm text-emerald-700 num-tabular">
                     +{formatINR(log.expected_net_value)}
                   </td>
                   <td className="p-3.5 text-center">
-                    <span className={`px-2.5 py-0.5 rounded-md typo-badge inline-block ${
-                      log.actual_outcome.includes('RECOVERED') ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'
+                    <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-bold inline-block ${
+                      log.actual_outcome.includes('RECOVERED') ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-slate-100 text-slate-800 border border-slate-200'
                     }`}>
                       {log.actual_outcome}
                     </span>
                   </td>
                   <td className="p-3.5 text-center">
-                    <span className="inline-flex items-center gap-1 text-emerald-700 text-[12px] font-semibold">
+                    <span className="inline-flex items-center gap-1 text-emerald-700 text-[11px] font-extrabold font-mono">
                       <ShieldCheck className="w-4 h-4 text-emerald-600" /> VERIFIED
                     </span>
                   </td>
