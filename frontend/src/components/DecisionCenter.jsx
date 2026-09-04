@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, CheckCircle2, AlertCircle, DollarSign, Clock, ArrowRight, Zap, Info, Play, RefreshCw, HelpCircle, Layers, Cpu, Code } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, AlertCircle, DollarSign, Clock, ArrowRight, Zap, Info, Play, RefreshCw, HelpCircle, Layers, Cpu, Code, Sliders } from 'lucide-react';
 
 export default function DecisionCenter({ caseData, onExecuteAction, onSelectCustomer, onNavigate }) {
   const [activeStory, setActiveStory] = useState('current'); // 'current' or 'non_action'
