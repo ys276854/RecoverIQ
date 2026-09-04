@@ -7,11 +7,13 @@ export default function RevenueLeaks({ leaksData, onSelectCase }) {
   const [searchTerm, setSearchTerm] = useState('');
 
   const formatINR = (val) => {
+    const num = Number(val);
+    if (isNaN(num) || num === null || num === undefined) return '₹0';
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
       maximumFractionDigits: 0
-    }).format(val);
+    }).format(num);
   };
 
   const DEFAULT_LEAKS = [

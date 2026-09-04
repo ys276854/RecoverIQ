@@ -40,9 +40,9 @@ export default function DemoBar({ onTriggerDemo, onReload }) {
             ✓ {webhookMessage}
           </span>
         ) : (
-          <span className="text-slate-400 hidden lg:inline text-[11px]">
-            Trigger live webhooks & evaluated decision scenarios
-          </span>
+          <span className="text-slate-400 hidden xl:inline text-[11px] font-sans">
+          ℹ️ <strong>Mode Disclosure:</strong> Production uses real Razorpay test-mode Payment Links & HMAC webhooks; simulator controls event timing.
+        </span>
         )}
       </div>
 
