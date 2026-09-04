@@ -24,6 +24,7 @@ export default function AppShell({
   const [showRayWidget, setShowRayWidget] = useState(false);
   const [showTourWidget, setShowTourWidget] = useState(false);
   const [tourStepIndex, setTourStepIndex] = useState(0);
+  const [showMoreNav, setShowMoreNav] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [webhookSimulating, setWebhookSimulating] = useState(false);
   const [webhookMessage, setWebhookMessage] = useState('');
@@ -191,11 +192,11 @@ export default function AppShell({
         </div>
       </div>
 
-      {/* 2. MAIN BRAND & NAVIGATION HEADER (Zero Overflow, Crisp Text Labels) */}
+      {/* 2. MAIN BRAND & NAVIGATION HEADER (Zero Overflow, Responsive Fit) */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs font-sans">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between gap-3">
+        <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 py-2 flex items-center justify-between gap-2 overflow-hidden">
           {/* Brand Logo */}
-          <div className="flex items-center space-x-2.5 shrink-0">
+          <div className="flex items-center space-x-2 shrink-0">
             <button
               onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
               className="lg:hidden p-1 rounded text-slate-600 hover:bg-slate-100"
@@ -203,20 +204,20 @@ export default function AppShell({
               <Menu className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center space-x-2 cursor-pointer" onClick={() => onNavigate('overview')}>
+            <div className="flex items-center space-x-1.5 cursor-pointer" onClick={() => onNavigate('overview')}>
               <span className="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 font-sans italic">
                 Razor<span className="text-blue-600">pay</span>
               </span>
-              <span className="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded border border-emerald-300 font-mono">
+              <span className="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-1.5 py-0.5 rounded border border-emerald-300 font-mono">
                 Agentic Stack
               </span>
-              <span className="hidden md:inline text-xs font-bold text-slate-500 font-mono pl-2 border-l border-slate-200">
+              <span className="hidden md:inline text-[11px] font-bold text-slate-500 font-mono pl-1.5 border-l border-slate-200">
                 LEAK RADAR
               </span>
             </div>
           </div>
 
-          {/* Desktop Navigation Links (Primary + Secondary Grouping, Crisp Zero Truncation) */}
+          {/* Desktop Navigation Links (Responsive fit: Primary tabs + More ▾ dropdown) */}
           <nav className="hidden lg:flex items-center space-x-1 font-sans">
             {navItemsPrimary.map((item) => {
               const Icon = item.icon;
@@ -225,7 +226,7 @@ export default function AppShell({
                 <button
                   key={item.id}
                   onClick={() => onNavigate(item.id)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all whitespace-nowrap ${
+                  className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all whitespace-nowrap ${
                     isActive
                       ? 'bg-blue-600 text-white shadow-xs'
                       : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
@@ -237,40 +238,79 @@ export default function AppShell({
               );
             })}
 
-            <div className="w-px h-5 bg-slate-200 mx-1" />
+            <div className="w-px h-4 bg-slate-200 mx-1" />
 
-            {navItemsSecondary.map((item) => {
-              const Icon = item.icon;
-              const isActive = currentTab === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => onNavigate(item.id)}
-                  className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all whitespace-nowrap ${
-                    isActive
-                      ? 'bg-blue-600 text-white shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                  }`}
-                >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                  <span>{item.label}</span>
-                </button>
-              );
-            })}
+            {/* Secondary Nav Items (Flat on 2XL, Dropdown on LG/XL) */}
+            <div className="hidden 2xl:flex items-center space-x-1">
+              {navItemsSecondary.map((item) => {
+                const Icon = item.icon;
+                const isActive = currentTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => onNavigate(item.id)}
+                    className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all whitespace-nowrap ${
+                      isActive
+                        ? 'bg-blue-600 text-white shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                    }`}
+                  >
+                    <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* "More ▾" Dropdown for standard LG and XL screens */}
+            <div className="relative 2xl:hidden">
+              <button
+                onClick={() => setShowMoreNav(!showMoreNav)}
+                className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all whitespace-nowrap ${
+                  navItemsSecondary.some(i => i.id === currentTab)
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <span>More</span>
+                <ChevronRight className={`w-3.5 h-3.5 transition-transform ${showMoreNav ? 'rotate-90' : 'rotate-0'}`} />
+              </button>
+
+              {showMoreNav && (
+                <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-xl shadow-xl p-1 text-xs space-y-0.5 z-40">
+                  {navItemsSecondary.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = currentTab === item.id;
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => { setShowMoreNav(false); onNavigate(item.id); }}
+                        className={`w-full text-left px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-2 ${
+                          isActive ? 'bg-blue-50 text-blue-600 font-extrabold' : 'text-slate-700 hover:bg-slate-50'
+                        }`}
+                      >
+                        <Icon className="w-3.5 h-3.5 text-slate-500" />
+                        <span>{item.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </nav>
 
           {/* Right Side: Merchant Info & Account Controls */}
           <div className="flex items-center space-x-2 text-xs shrink-0 font-sans">
-            <span className="hidden xl:inline-flex items-center gap-1 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-md text-slate-800 font-mono text-[11px] font-bold">
+            <span className="hidden 2xl:inline-flex items-center gap-1 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-md text-slate-800 font-mono text-[11px] font-bold">
               🏢 {user?.business_name || 'Acme Commerce India'}
             </span>
 
             <div className="relative">
               <button
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg shadow-2xs flex items-center gap-1 transition-all"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-2.5 py-1.5 rounded-lg shadow-2xs flex items-center gap-1 transition-all"
               >
-                <span className="truncate max-w-[140px]">{user?.full_name || 'Demo Merchant Admin'}</span>
+                <span className="truncate max-w-[130px]">{user?.full_name || 'Demo Merchant Admin'}</span>
                 <ChevronRight className="w-3.5 h-3.5 shrink-0" />
               </button>
 
@@ -295,15 +335,6 @@ export default function AppShell({
                 </div>
               )}
             </div>
-
-            <button
-              onClick={onLogout}
-              className="bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 font-bold text-xs px-2.5 py-1.5 rounded-lg shadow-2xs flex items-center gap-1 transition-all"
-              title="Sign out to return to the Login Page"
-            >
-              <LogOut className="w-3.5 h-3.5 text-slate-500" />
-              <span className="hidden sm:inline">Logout</span>
-            </button>
           </div>
         </div>
 
