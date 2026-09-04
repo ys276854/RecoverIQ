@@ -41,6 +41,9 @@ export default function DecisionCenter({ caseData, onExecuteAction, onSelectCust
     }).format(val || 0);
   };
 
+  const actionsEvaluated = Array.isArray(evaluation?.actions_evaluated) ? evaluation.actions_evaluated : DEFAULT_CASE.evaluation.actions_evaluated;
+  const optimalActionObj = actionsEvaluated.find(a => a.is_optimal) || actionsEvaluated[0];
+
   const vOrder = event?.amount || 12500;
   const pNat = evaluation?.natural_recovery_prob || 0.586;
 
