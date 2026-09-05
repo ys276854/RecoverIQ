@@ -429,7 +429,7 @@ export default function DecisionCenter({ caseData, onExecuteAction, onSelectCust
                 </span>
               </div>
 
-              {/* DYNAMIC CAUSAL PARAMETER TINKER & RAZORPAY API CODE SHOWCASE */}
+              {/* DYNAMIC CAUSAL PARAMETER TINKER & RECOVERIQ API CODE SHOWCASE */}
               <div className="p-4 bg-slate-900 rounded-xl border border-slate-800 space-y-4 font-mono text-xs">
                 <div className="flex justify-between items-center text-blue-400 font-bold border-b border-slate-800 pb-2">
                   <div className="flex items-center gap-1.5">

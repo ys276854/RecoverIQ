@@ -201,9 +201,9 @@ export default function Onboarding({ user, onComplete }) {
               </div>
 
               <div
-                onClick={() => setFormData({ ...formData, data_connection: 'RAZORPAY_SANDBOX' })}
+                onClick={() => setFormData({ ...formData, data_connection: 'RECOVERIQ_SANDBOX' })}
                 className={`p-3 rounded-lg border cursor-pointer transition-all ${
-                  formData.data_connection === 'RAZORPAY_SANDBOX' ? 'border-blue-500 bg-blue-950/40' : 'border-slate-800 bg-slate-900'
+                  formData.data_connection === 'RECOVERIQ_SANDBOX' ? 'border-blue-500 bg-blue-950/40' : 'border-slate-800 bg-slate-900'
                 }`}
               >
                 <div className="font-bold text-white">RecoverIQ Test Mode API</div>

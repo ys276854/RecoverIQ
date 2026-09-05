@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://razorpay-revenue-leak-radar.onrender.com/api/$1"
+      "destination": "https://recoveriq.onrender.com/api/$1"
     },
     {
       "source": "/(.*)",

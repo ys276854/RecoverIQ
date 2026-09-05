@@ -122,7 +122,7 @@
   font-weight: 700;
 }
 
-.btn-razorpay-primary {
+.btn-recoveriq-primary, .btn-razorpay-primary {
   font-family: 'Mulish', sans-serif;
   background-color: #2563eb;
   color: #ffffff;
@@ -132,13 +132,13 @@
   transition: all 0.15s ease-in-out;
   box-shadow: 0 1px 2px 0 rgba(37, 99, 235, 0.2);
 }
-.btn-razorpay-primary:hover {
+.btn-recoveriq-primary:hover, .btn-razorpay-primary:hover {
   background-color: #1d4ed8;
   box-shadow: 0 4px 12px 0 rgba(37, 99, 235, 0.3);
   transform: translateY(-1px);
 }
 
-.btn-razorpay-outline {
+.btn-recoveriq-outline, .btn-razorpay-outline {
   font-family: 'Mulish', sans-serif;
   border: 1.5px solid #2563eb;
   color: #2563eb;
@@ -148,7 +148,7 @@
   border-radius: 0.5rem;
   transition: all 0.15s ease-in-out;
 }
-.btn-razorpay-outline:hover {
+.btn-recoveriq-outline:hover, .btn-razorpay-outline:hover {
   background-color: #eff6ff;
 }
 

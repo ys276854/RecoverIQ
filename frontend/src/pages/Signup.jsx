@@ -74,7 +74,7 @@ export default function Signup({ onSignupSuccess, onNavigateLogin }) {
 
   return (
     <div className="min-h-screen bg-slate-900 flex flex-col md:flex-row text-slate-100 font-sans">
-      {/* LEFT PANEL: Razorpay Branding & Product Benefits */}
+      {/* LEFT PANEL: RecoverIQ Branding & Product Benefits */}
       <div className="md:w-5/12 p-8 sm:p-12 lg:p-16 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 flex flex-col justify-between border-b md:border-b-0 md:border-r border-slate-800">
         <div className="space-y-8">
           {/* Logo & Product Badges */}
@@ -157,7 +157,7 @@ export default function Signup({ onSignupSuccess, onNavigateLogin }) {
                     <input
                       type="text"
                       id="signup_backend_url"
-                      placeholder="https://razorpay-revenue-leak-radar.onrender.com"
+                      placeholder="https://recoveriq.onrender.com"
                       className="flex-1 px-3 py-1.5 bg-slate-950 border border-slate-700 rounded text-white font-mono text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
                     />
                     <button
