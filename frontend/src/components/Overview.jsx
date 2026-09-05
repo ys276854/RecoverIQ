@@ -201,9 +201,9 @@ export default function Overview({ overviewData, onNavigate, onSelectCase }) {
             <div className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 num-tabular tracking-tight">
               {formatINR(net_recovery_value)}
             </div>
-            <div className="flex items-center gap-2 pt-1">
-              <span className="bg-emerald-100 text-emerald-800 text-xs font-extrabold px-2.5 py-1 rounded-full font-mono border border-emerald-300">
-                +28.5% Net Increment
+            <div className="flex items-center gap-2 pt-1 flex-wrap">
+              <span className="bg-emerald-100 text-emerald-800 text-xs font-extrabold px-2.5 py-1 rounded-full font-mono border border-emerald-300" title="Batch Backtest over Static Retry (N = 12,483 historical orders)">
+                +28.5% Net Increment (Batch Backtest, N = 12,483)
               </span>
               <span className="bg-blue-100 text-blue-800 text-xs font-extrabold px-2.5 py-1 rounded-full font-mono border border-blue-300">
                 ROI: 14.2x

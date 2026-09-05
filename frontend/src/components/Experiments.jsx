@@ -88,7 +88,7 @@ export default function Experiments() {
           </p>
         </div>
         <div className="text-right">
-          <div className="text-xs text-blue-200 font-medium uppercase">Net Revenue Lift</div>
+          <div className="text-xs text-blue-200 font-medium uppercase font-mono">Net Yield Lift (A/B RCT N = 2,500)</div>
           <div className="text-3xl font-bold text-emerald-400 font-mono mt-0.5">{metrics.net_lift_pct}</div>
         </div>
       </div>

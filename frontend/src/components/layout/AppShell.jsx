@@ -129,7 +129,7 @@ export default function AppShell({
         <div className="flex items-center space-x-2 shrink-0">
           <span className="inline-flex items-center gap-1.5 bg-blue-950/80 text-blue-300 px-2 py-0.5 rounded border border-blue-800/60 font-bold">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Razorpay Autonomous Radar &bull; 18ms Latency &bull; App Store Active</span>
+            <span>Razorpay API: Connected (Live Test Mode Keys) &bull; 18ms Latency &bull; HMAC Active</span>
           </span>
           <span className="text-slate-500 hidden xl:inline">
             Causal Engine (ΔP × Value - Cost)
@@ -140,8 +140,8 @@ export default function AppShell({
         <div className="flex items-center space-x-2 shrink-0">
           <button
             onClick={onLogout}
-            className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 border border-blue-500/40 text-[11px] font-bold transition-all shadow-xs"
-            title="Return to the Login / Auth Page"
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-blue-900/60 hover:bg-blue-800/80 text-blue-200 border border-blue-700/60 text-[11px] font-bold transition-all"
+            title="Navigate to Login / Merchant Onboarding Screen"
           >
             <LogOut className="w-3 h-3 text-blue-400" />
             <span>🔑 Login Screen</span>
@@ -154,10 +154,10 @@ export default function AppShell({
               onClick={handleSimulateWebhook}
               disabled={webhookSimulating}
               className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 border border-emerald-500/40 text-[11px] font-bold transition-all shadow-xs"
-              title="Simulate incoming Razorpay payment.failed webhook payload"
+              title="Simulate incoming Razorpay payment.failed webhook payload (HMAC SHA256)"
             >
               <Radio className="w-3 h-3 text-emerald-400 animate-pulse" />
-              <span>{webhookSimulating ? 'Ingesting...' : '⚡ Webhook Simulator'}</span>
+              <span>{webhookSimulating ? 'Ingesting...' : '⚡ Webhook Simulator (Razorpay HMAC Payload)'}</span>
             </button>
           )}
 

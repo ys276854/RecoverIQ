@@ -55,7 +55,7 @@ export default function DemoBar({ onTriggerDemo, onReload }) {
           title="Simulate incoming Razorpay payment.failed webhook payload"
         >
           <Radio className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-          <span>{webhookSimulating ? 'Ingesting...' : '⚡ Webhook Simulator'}</span>
+          <span>{webhookSimulating ? 'Ingesting...' : '⚡ Webhook Simulator (Razorpay HMAC Test Payload)'}</span>
         </button>
 
         {/* Preset Case 1: ACT */}

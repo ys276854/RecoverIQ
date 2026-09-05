@@ -356,7 +356,7 @@ export default function App() {
                 <div className="flex items-center space-x-2">
                   <Zap className="w-4 h-4 text-blue-400 animate-pulse" />
                   <h3 className="font-bold text-xs uppercase tracking-wider font-mono text-white">
-                    EXECUTING RECOVERY ACTION &bull; {executionState.action}
+                    EXECUTING RECOVERY ACTION &bull; {executionState.action} (Razorpay API v1/payment_links - Live Test Mode API)
                   </h3>
                 </div>
                 <button onClick={() => setExecutionState(null)} className="text-slate-400 hover:text-slate-200">

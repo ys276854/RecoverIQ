@@ -37,11 +37,18 @@ export default function RevenueLeaks({ leaksData, onSelectCase }) {
   const rawLeaks = Array.isArray(leaksData) && leaksData.length > 0 ? leaksData : DEFAULT_LEAKS;
 
   const normalizeItem = (item) => {
-    if (!item) return { event: { id: 'LEAK_001', customer_name: 'Customer', order_id: 'ORD-001', amount: 0, category: 'PAYMENT_FAILURE', payment_method: 'UPI', failure_reason: 'Timeout', age_minutes: 10, status: 'READY' }, evaluation: { recommended_action: 'PAYMENT_LINK', incremental_value_over_wait: 1000, natural_recovery_prob: 0.5, confidence_score: 0.9 } };
+    if (!item) return { event: { id: 'LEAK_001', customer_name: 'Customer', order_id: 'ORD-001', amount: 0, category: 'PAYMENT_FAILURE', payment_method: 'UPI', failure_reason: 'Timeout', age_minutes: 10, status: 'READY' }, evaluation: { recommended_action: 'PAYMENT_LINK', expected_net_value: 9496, incremental_value_over_wait: 9496, natural_recovery_prob: 0.5, confidence_score: 0.9 } };
     if (item.event) {
+      const evalObj = item.evaluation || {};
       return {
         event: item.event,
-        evaluation: item.evaluation || { recommended_action: 'PAYMENT_LINK', incremental_value_over_wait: 1000, natural_recovery_prob: 0.5, confidence_score: 0.9 }
+        evaluation: {
+          recommended_action: evalObj.recommended_action || evalObj.optimal_action || 'PAYMENT_LINK',
+          expected_net_value: evalObj.expected_net_value ?? evalObj.incremental_value_over_wait ?? item.optimal_einrv ?? item.amount ?? 0,
+          incremental_value_over_wait: evalObj.incremental_value_over_wait ?? item.optimal_einrv ?? 0,
+          natural_recovery_prob: evalObj.natural_recovery_prob ?? 0.5,
+          confidence_score: evalObj.confidence_score ?? 0.92
+        }
       };
     }
     return {
@@ -59,6 +66,7 @@ export default function RevenueLeaks({ leaksData, onSelectCase }) {
       },
       evaluation: {
         recommended_action: item.optimal_action || 'PAYMENT_LINK',
+        expected_net_value: item.optimal_einrv ?? item.expected_net_value ?? item.amount ?? 0,
         incremental_value_over_wait: item.optimal_einrv || 1000.0,
         natural_recovery_prob: item.natural_recovery_prob || 0.586,
         confidence_score: 0.92
