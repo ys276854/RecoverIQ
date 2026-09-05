@@ -4,7 +4,7 @@ from models import Guardrails, ActionEvaluation, DecisionResult, TransactionEven
 
 class RevenueLeakEngine:
     """
-    Mathematical Intelligence Engine for Razorpay Revenue Leak Radar:
+    Mathematical Intelligence Engine for RecoverIQ — AI-powered revenue recovery intelligence:
     1. Natural Recovery Estimator P_nat(c) calibrated on Olist E-Commerce dataset
     2. Treatment Uplift Estimator ΔP_a(c) calibrated on Hillstrom Email RCT dataset
     3. Expected Incremental Net Recovery Engine (EINRV) & Merchant Guardrail Enforcer
@@ -31,7 +31,7 @@ class RevenueLeakEngine:
 
     ACTION_DISPLAY_NAMES = {
         "WAIT": "WAIT (Do Nothing)",
-        "PAYMENT_LINK": "Razorpay Payment Link",
+        "PAYMENT_LINK": "RecoverIQ Payment Link",
         "REMINDER": "WhatsApp / SMS Reminder",
         "DISCOUNT": "10% Discount Coupon",
         "RETRY": "Automated Gateway Retry",
@@ -198,31 +198,8 @@ class RevenueLeakEngine:
 
         inc_value = max_net_value - wait_net_value
 
-        # Generate concise rationale with channel cost trade-off reasoning
-        cust_name = event.get("customer_name", "Customer")
-        if optimal_action == "WAIT":
-            rationale = (
-                f"High baseline natural recovery probability ({p_nat*100:.1f}%). "
-                f"Active intervention costs (WhatsApp ₹3.50, Payment Link ₹4.00) or discount margin decay outweigh incremental lift gains. "
-                f"Recommended strategy: WAIT & MONITOR to protect merchant margin."
-            )
-        elif optimal_action == "PAYMENT_LINK":
-            rationale = (
-                f"Selected WhatsApp Payment Link (₹4.00) over SMS (₹0.25) because WhatsApp yields +38% higher conversion on instant card/UPI failures. "
-                f"Generates +₹{inc_value:.0f} incremental net recovery over WAIT despite higher channel cost."
-            )
-        elif optimal_action == "DISCOUNT":
-            rationale = (
-                f"10% Discount boosts recovery probability to {(p_nat+self.estimate_treatment_uplift('DISCOUNT', p_nat, event))*100:.1f}%. "
-                f"Margin cost (10%) is offset by high order recovery value (₹{v_order:,.0f})."
-            )
-        elif optimal_action == "ESCALATION":
-            rationale = (
-                f"Invoice overdue case. Formal escalation notification (₹15.00) provides optimal recovery yield "
-                f"for B2B receivable size ₹{v_order:,.0f}."
-            )
-        else:
-            rationale = f"Selected {optimal_action} to maximize Expected Incremental Net Recovery Value."
+        delta_opt = self.estimate_treatment_uplift(optimal_action, p_nat, event)
+        rationale = self.generate_action_rationale(optimal_action, event, p_nat, delta_opt, v_order, inc_value)
 
         return DecisionResult(
             event_id=event.get("id", "LEAK_0"),
@@ -237,6 +214,39 @@ class RevenueLeakEngine:
             actions_evaluated=actions_evaluated,
             timestamp=event.get("timestamp", "")
         )
+
+    def generate_action_rationale(self, action: str, event: Dict[str, Any], p_nat: float, delta_p: float, v_order: float, inc_value: float) -> str:
+        """Generates dynamic, action-specific causal decision rationale."""
+        if action == "WAIT":
+            return (
+                f"High baseline natural recovery probability ({p_nat*100:.1f}%). "
+                f"Intervention fees & margin discounts avoided to protect merchant unit economics."
+            )
+        elif action == "PAYMENT_LINK":
+            return (
+                f"Selected WhatsApp Payment Link (₹4.00) over SMS (₹0.25) because WhatsApp yields +38% higher conversion on instant card/UPI failures. "
+                f"Generates +₹{max(0, inc_value):.0f} net incremental recovery over organic baseline."
+            )
+        elif action == "ESCALATION":
+            return (
+                f"Invoice overdue case (₹{v_order:,.0f}). Formal RecoverIQ Invoice Escalation notice (₹15.00) dispatched to protect high-LTV enterprise receivable."
+            )
+        elif action == "DISCOUNT":
+            margin_cost = v_order * 0.10
+            return (
+                f"Targeted 10% discount coupon (₹{margin_cost:,.0f}) applied under merchant guardrail cap (₹{self.guardrails.max_discount_amount:.0f}). "
+                f"Lift: +{(delta_p*100):.1f}% on stalled checkout."
+            )
+        elif action == "RETRY":
+            return (
+                f"Automated Gateway Retry (₹2.00) initiated following transient gateway 504 timeout. Organic recovery prob: {(p_nat*100):.1f}%."
+            )
+        elif action == "REMINDER":
+            return (
+                f"Multi-channel WhatsApp & SMS reminder (₹3.50) sent to refresh customer memory without discount margin decay."
+            )
+        else:
+            return f"Action {action} executed to maximize Expected Incremental Net Recovery Value."
 
     def run_counterfactual_simulation(self, events: List[Dict[str, Any]], req: SimulationRequest) -> Dict[str, Any]:
         """

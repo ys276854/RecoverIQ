@@ -5,6 +5,16 @@ import { apiFetch } from '../services/api';
 export default function DemoBar({ onTriggerDemo, onReload }) {
   const [webhookSimulating, setWebhookSimulating] = useState(false);
   const [webhookMessage, setWebhookMessage] = useState('');
+  const [showCaptions, setShowCaptions] = useState(false);
+  const [captionIndex, setCaptionIndex] = useState(0);
+
+  const NARRATION_SLIDES = [
+    { title: "Executive Overview", text: "Standard retries send blind notifications. Revenue Leak Radar calculates organic baseline P(Nat) to avoid wasteful messaging." },
+    { title: "Decision Center", text: "Evaluating 4 treatment arms: Payment Link, WhatsApp Nudge, 10% Margin Discount, vs. Zero-Touch Organic Baseline." },
+    { title: "Causal Economics", text: "Actions execute only if EINRV = V * ΔP - Costs > 0, protecting merchant unit economics and customer LTV." },
+    { title: "Audit Trail Ledger", text: "Every action logs an immutable mathematical rationale recording treatment lift, policy checks, and unit cost." },
+    { title: "Merchant Guardrails", text: "Strict policy boundaries enforce maximum discount caps (₹500), touch limits (2/48h), and quiet hours." }
+  ];
 
   const handleSimulateWebhook = async () => {
     setWebhookSimulating(true);
@@ -30,75 +40,119 @@ export default function DemoBar({ onTriggerDemo, onReload }) {
   };
 
   return (
-    <div className="bg-[#0B0F19] text-slate-200 border-b border-slate-800 px-4 sm:px-6 py-2 text-xs flex flex-wrap items-center justify-between gap-3 shadow-md font-mono select-none">
-      <div className="flex items-center space-x-2.5">
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-blue-500/20 text-blue-300 font-bold border border-blue-500/40 text-[11px]">
-          <Terminal className="w-3.5 h-3.5 text-blue-400" /> DEV TOOLKIT &bull; DEMO PRESETS
-        </span>
-        {webhookMessage ? (
-          <span className="text-emerald-400 font-bold text-[11px] animate-pulse">
-            ✓ {webhookMessage}
+    <div className="flex flex-col font-mono select-none">
+      <div className="bg-[#0B0F19] text-slate-200 border-b border-slate-800 px-4 sm:px-6 py-2 text-xs flex flex-wrap items-center justify-between gap-3 shadow-md">
+        <div className="flex items-center space-x-2.5">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-blue-500/20 text-blue-300 font-bold border border-blue-500/40 text-[11px]">
+            <Terminal className="w-3.5 h-3.5 text-blue-400" /> DEV TOOLKIT &bull; DEMO PRESETS
           </span>
-        ) : (
-          <span className="text-slate-400 hidden xl:inline text-[11px] font-sans">
-          ℹ️ <strong>Mode Disclosure:</strong> Production uses real Razorpay test-mode Payment Links & HMAC webhooks; simulator controls event timing.
-        </span>
-        )}
+          {webhookMessage ? (
+            <span className="text-emerald-400 font-bold text-[11px] animate-pulse">
+              ✓ {webhookMessage}
+            </span>
+          ) : (
+            <span className="text-slate-400 hidden xl:inline text-[11px] font-sans">
+              ℹ️ <strong>Mode Disclosure:</strong> Production uses real RecoverIQ test-mode Payment Links & HMAC webhooks; simulator controls event timing.
+            </span>
+          )}
+        </div>
+
+        <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+          {/* Subtitle Captions Toggle */}
+          <button
+            onClick={() => setShowCaptions(!showCaptions)}
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md transition-all text-xs font-bold shadow-xs border ${
+              showCaptions ? 'bg-amber-500/30 text-amber-300 border-amber-500/60' : 'bg-slate-800 text-slate-300 hover:bg-slate-700 border-slate-700'
+            }`}
+            title="Toggle video narration subtitles for recorded demos"
+          >
+            <span>🎙️ Narration Captions ({showCaptions ? 'ON' : 'OFF'})</span>
+          </button>
+
+          {/* Webhook Simulator Button */}
+          <button
+            onClick={handleSimulateWebhook}
+            disabled={webhookSimulating}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 border border-emerald-500/40 transition-all text-xs font-bold shadow-xs"
+            title="Simulate incoming RecoverIQ payment.failed webhook payload"
+          >
+            <Radio className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+            <span>{webhookSimulating ? 'Ingesting...' : '⚡ Webhook Simulator (RecoverIQ HMAC Test Payload)'}</span>
+          </button>
+
+          {/* Preset Case 1: ACT */}
+          <button
+            onClick={() => onTriggerDemo('CASE_1_ACT')}
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 border border-blue-500/40 transition-all text-xs font-semibold"
+          >
+            <Zap className="w-3.5 h-3.5 text-blue-400" /> Case 1: Act Now
+          </button>
+
+          {/* Preset Case 2: WAIT */}
+          <button
+            onClick={() => onTriggerDemo('CASE_2_WAIT')}
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border border-amber-500/40 transition-all text-xs font-semibold"
+          >
+            <PauseCircle className="w-3.5 h-3.5 text-amber-400" /> Case 2: Wait
+          </button>
+
+          {/* Preset Case 3: BLOCK */}
+          <button
+            onClick={() => onTriggerDemo('CASE_3_STOP')}
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 border border-rose-500/40 transition-all text-xs font-semibold"
+          >
+            <Ban className="w-3.5 h-3.5 text-rose-400" /> Case 3: Block
+          </button>
+
+          {/* Failure Recovery Resiliency Demo Scenario */}
+          <button
+            onClick={() => onTriggerDemo('FAILURE_RECOVERY')}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/40 transition-all text-xs font-bold shadow-xs"
+            title="Simulate API failure (502 Bad Gateway) and circuit-breaker fallback recovery flow"
+          >
+            <Cpu className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
+            <span>🛡️ Failure Recovery Demo</span>
+          </button>
+
+          <button
+            onClick={onReload}
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-700 transition-all text-xs"
+          >
+            <RotateCcw className="w-3.5 h-3.5" /> Reset
+          </button>
+        </div>
       </div>
 
-      <div className="flex items-center space-x-2 flex-wrap gap-y-1">
-        {/* Webhook Simulator Button */}
-        <button
-          onClick={handleSimulateWebhook}
-          disabled={webhookSimulating}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 border border-emerald-500/40 transition-all text-xs font-bold shadow-xs"
-          title="Simulate incoming Razorpay payment.failed webhook payload"
-        >
-          <Radio className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-          <span>{webhookSimulating ? 'Ingesting...' : '⚡ Webhook Simulator (Razorpay HMAC Test Payload)'}</span>
-        </button>
-
-        {/* Preset Case 1: ACT */}
-        <button
-          onClick={() => onTriggerDemo('CASE_1_ACT')}
-          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 border border-blue-500/40 transition-all text-xs font-semibold"
-        >
-          <Zap className="w-3.5 h-3.5 text-blue-400" /> Case 1: Act Now
-        </button>
-
-        {/* Preset Case 2: WAIT */}
-        <button
-          onClick={() => onTriggerDemo('CASE_2_WAIT')}
-          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border border-amber-500/40 transition-all text-xs font-semibold"
-        >
-          <PauseCircle className="w-3.5 h-3.5 text-amber-400" /> Case 2: Wait
-        </button>
-
-        {/* Preset Case 3: BLOCK */}
-        <button
-          onClick={() => onTriggerDemo('CASE_3_STOP')}
-          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 border border-rose-500/40 transition-all text-xs font-semibold"
-        >
-          <Ban className="w-3.5 h-3.5 text-rose-400" /> Case 3: Block
-        </button>
-
-        {/* Failure Recovery Resiliency Demo Scenario */}
-        <button
-          onClick={() => onTriggerDemo('FAILURE_RECOVERY')}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/40 transition-all text-xs font-bold shadow-xs"
-          title="Simulate API failure (502 Bad Gateway) and circuit-breaker fallback recovery flow"
-        >
-          <Cpu className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
-          <span>🛡️ Failure Recovery Demo</span>
-        </button>
-
-        <button
-          onClick={onReload}
-          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-700 transition-all text-xs"
-        >
-          <RotateCcw className="w-3.5 h-3.5" /> Reset
-        </button>
-      </div>
+      {/* Narration Subtitle Banner */}
+      {showCaptions && (
+        <div className="bg-amber-950/90 text-amber-100 border-b border-amber-800 px-4 py-2 text-xs flex justify-between items-center font-sans gap-3 backdrop-blur-xs">
+          <div className="flex items-center space-x-2">
+            <span className="bg-amber-500 text-slate-950 text-[10px] font-black uppercase px-2 py-0.5 rounded font-mono shrink-0">
+              {NARRATION_SLIDES[captionIndex].title}
+            </span>
+            <span className="font-semibold text-white">
+              "{NARRATION_SLIDES[captionIndex].text}"
+            </span>
+          </div>
+          <div className="flex items-center space-x-1 shrink-0 font-mono text-[11px]">
+            <button
+              onClick={() => setCaptionIndex((captionIndex - 1 + NARRATION_SLIDES.length) % NARRATION_SLIDES.length)}
+              className="px-2 py-0.5 bg-amber-900 hover:bg-amber-800 text-amber-200 rounded border border-amber-700"
+            >
+              &larr; Prev
+            </button>
+            <span className="px-2 text-amber-400">
+              {captionIndex + 1}/{NARRATION_SLIDES.length}
+            </span>
+            <button
+              onClick={() => setCaptionIndex((captionIndex + 1) % NARRATION_SLIDES.length)}
+              className="px-2 py-0.5 bg-amber-900 hover:bg-amber-800 text-amber-200 rounded border border-amber-700"
+            >
+              Next &rarr;
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

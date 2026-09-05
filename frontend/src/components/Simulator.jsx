@@ -96,7 +96,7 @@ export default function Simulator() {
             </span>
           </div>
           <p className="text-amber-900 leading-relaxed text-[11px]">
-            Olist and Hillstrom serve as historical proxy benchmarks to demonstrate our causal uplift pipeline; production merchant deployment replaces these proxies with live Razorpay webhook telemetry.
+            Olist and Hillstrom serve as historical proxy benchmarks to demonstrate our causal uplift pipeline; production merchant deployment replaces these proxies with live RecoverIQ webhook telemetry.
           </p>
         </div>
       </div>

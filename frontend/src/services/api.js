@@ -136,7 +136,7 @@ function getMockResponse(endpoint, options = {}) {
       evaluation: {
         natural_recovery_prob: 0.12,
         actions_evaluated: [
-          { action: "PAYMENT_LINK", display_name: "Razorpay Payment Link", is_optimal: true, expected_net_value: 9496.0, recovery_probability: 0.88 },
+          { action: "PAYMENT_LINK", display_name: "RecoverIQ Payment Link", is_optimal: true, expected_net_value: 9496.0, recovery_probability: 0.88 },
           { action: "WAIT", display_name: "WAIT (Organic)", is_optimal: false, expected_net_value: 1500.0, recovery_probability: 0.12 },
           { action: "BLOCK", display_name: "Margin Discount Block", is_optimal: false, expected_net_value: 0.0, recovery_probability: 0.0 }
         ]
@@ -183,6 +183,19 @@ function getMockResponse(endpoint, options = {}) {
   if (endpoint.includes('/api/audit')) {
     return [
       {
+        id: "AUDIT_CLAMP_569",
+        timestamp: "18:51:16",
+        event_type: "Policy Enforcement",
+        entity_id: "#GUARDRAIL_CONFIG",
+        customer_name: "Merchant System Governance",
+        action_taken: "GUARDRAIL_CLAMP",
+        expected_net_value: 0.0,
+        status: "VERIFIED",
+        reason: "System Governance Safety Override: Discount cap requested ₹25,000 clamped to safety ceiling ₹5,000; Intervention cost requested ₹256,789 clamped to safety ceiling ₹150. Preserved merchant unit economics from out-of-bounds input drift.",
+        policy_check: "CLAMPED & AUDITED (Max Cap Enforced)",
+        actual_outcome: "POLICY_OVERRIDE_LOGGED"
+      },
+      {
         id: "AUDIT_101",
         timestamp: "14:22:10",
         event_type: "Payment Failure",
@@ -210,7 +223,7 @@ function getMockResponse(endpoint, options = {}) {
         timeline: [
           { status: "SUCCESS", title: "Order #ORD-7102 Paid", description: "Payment of ₹8,400 via UPI succeeded naturally.", timestamp: "Yesterday, 14:20" },
           { status: "FAILURE", title: "Order #ORD-8271 Gateway Timeout", description: "Credit card payment of ₹12,500 failed (Gateway 504).", timestamp: "Today, 11:15" },
-          { status: "ACTION", title: "Razorpay Payment Link Sent", description: "Dispatched payment link via SMS/WhatsApp.", timestamp: "Today, 11:16" }
+          { status: "ACTION", title: "RecoverIQ Payment Link Sent", description: "Dispatched payment link via SMS/WhatsApp.", timestamp: "Today, 11:16" }
         ]
       },
       'CUST_9014': {
@@ -230,7 +243,7 @@ function getMockResponse(endpoint, options = {}) {
         timeline: [
           { status: "SUCCESS", title: "Invoice #INV-3801 Settled", description: "B2B payment of ₹1,20,000 cleared via NEFT.", timestamp: "10 days ago" },
           { status: "FAILURE", title: "Invoice #INV-4102 Payment Overdue", description: "Payment terms exceeded 30 days (₹45,000).", timestamp: "5 days ago" },
-          { status: "ACTION", title: "Formal Invoice Escalation Generated", description: "Created Razorpay Invoice escalation notice.", timestamp: "Today, 09:30" }
+          { status: "ACTION", title: "Formal Invoice Escalation Generated", description: "Created RecoverIQ Invoice escalation notice.", timestamp: "Today, 09:30" }
         ]
       },
       'CUST_7712': {
@@ -258,7 +271,7 @@ function getMockResponse(endpoint, options = {}) {
       failed_attempts: 2,
       average_recovery_time_hours: 2.1,
       timeline: [
-        { status: "SUCCESS", title: "Previous Order Settled", description: "Payment completed via Razorpay UPI.", timestamp: "2 days ago" },
+        { status: "SUCCESS", title: "Previous Order Settled", description: "Payment completed via UPI.", timestamp: "2 days ago" },
         { status: "FAILURE", title: "Payment Failure Detected", description: "Gateway timeout on payment attempt.", timestamp: "Today, 10:00" },
         { status: "ACTION", title: "Radar Evaluated Optimal Action", description: "Action determined by EINRV model.", timestamp: "Today, 10:01" }
       ]

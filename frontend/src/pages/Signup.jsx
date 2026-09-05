@@ -80,13 +80,13 @@ export default function Signup({ onSignupSuccess, onNavigateLogin }) {
           {/* Logo & Product Badges */}
           <div className="flex items-center space-x-2.5">
             <span className="font-extrabold text-2xl tracking-tight text-white font-sans italic">
-              Razor<span className="text-blue-500">pay</span>
+              Recover<span className="text-blue-500">IQ</span>
             </span>
             <span className="bg-emerald-950 text-emerald-300 text-xs font-bold px-2.5 py-0.5 rounded border border-emerald-800 font-mono">
-              Agentic Stack
+              AI Engine
             </span>
             <span className="text-xs font-bold text-blue-400 border-l border-slate-700 pl-2.5 font-mono">
-              REVENUE LEAK RADAR
+              REVENUE RECOVERY
             </span>
           </div>
 

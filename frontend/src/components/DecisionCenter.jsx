@@ -20,7 +20,7 @@ export default function DecisionCenter({ caseData, onExecuteAction, onSelectCust
     evaluation: {
       natural_recovery_prob: 0.586,
       actions_evaluated: [
-        { action: "PAYMENT_LINK", display_name: "Razorpay Payment Link", is_optimal: true, expected_net_value: 12611.0, recovery_probability: 0.88 },
+        { action: "PAYMENT_LINK", display_name: "RecoverIQ Payment Link", is_optimal: true, expected_net_value: 12611.0, recovery_probability: 0.88 },
         { action: "WAIT", display_name: "WAIT (Organic)", is_optimal: false, expected_net_value: 11310.0, recovery_probability: 0.586 },
         { action: "BLOCK", display_name: "Margin Discount Block", is_optimal: false, expected_net_value: 0.0, recovery_probability: 0.0 }
       ]
@@ -41,8 +41,11 @@ export default function DecisionCenter({ caseData, onExecuteAction, onSelectCust
     }).format(val || 0);
   };
 
+  const [selectedActionState, setSelectedActionState] = useState(null);
+
   const actionsEvaluated = Array.isArray(evaluation?.actions_evaluated) ? evaluation.actions_evaluated : DEFAULT_CASE.evaluation.actions_evaluated;
   const optimalActionObj = actionsEvaluated.find(a => a.is_optimal) || actionsEvaluated[0];
+  const activeSelectedAction = selectedActionState || optimalActionObj.action;
 
   const vOrder = event?.amount || 12500;
   const pNat = evaluation?.natural_recovery_prob || 0.586;
@@ -77,14 +80,14 @@ export default function DecisionCenter({ caseData, onExecuteAction, onSelectCust
     const expectedNet = existing?.expected_net_value ?? Math.max(0, vOrder * recProb - directCost - marginCost);
 
     const channelTypes = {
-      PAYMENT_LINK: 'Razorpay Link via WhatsApp',
+      PAYMENT_LINK: 'RecoverIQ Link via WhatsApp',
       REMINDER: 'Conversational SMS/WhatsApp',
       DISCOUNT: '10% Margin Discount Offer',
       WAIT: 'Zero-Touch Organic Control'
     };
 
     const displayNames = {
-      PAYMENT_LINK: 'Razorpay Payment Link',
+      PAYMENT_LINK: 'RecoverIQ Payment Link',
       REMINDER: 'WhatsApp / SMS Nudge',
       DISCOUNT: '10% Margin Discount',
       WAIT: 'WAIT (Organic Baseline)'
@@ -173,30 +176,51 @@ export default function DecisionCenter({ caseData, onExecuteAction, onSelectCust
 
             {/* 3-Action Strategy Evaluation Matrix */}
             <div className="p-6 space-y-4 bg-white">
-              <div className="text-xs font-bold tracking-wider text-slate-500 uppercase font-mono">WHAT SHOULD WE DO? (STRATEGY MATRIX: ACT NOW | WAIT | BLOCK)</div>
+              <div className="flex justify-between items-center">
+                <div className="text-xs font-bold tracking-wider text-slate-500 uppercase font-mono">
+                  WHAT SHOULD WE DO? (CLICK ANY STRATEGY TO SELECT & EXECUTE)
+                </div>
+                <span className="text-[11px] font-mono text-blue-700 font-bold bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full">
+                  Selected: {activeSelectedAction.replace('_', ' ')}
+                </span>
+              </div>
+
               <div className="space-y-3 font-mono text-xs">
                 {actionsEvaluated.map((act) => {
                   const isOptimal = act.is_optimal;
+                  const isSelected = activeSelectedAction === act.action;
                   return (
                     <div
                       key={act.action}
-                      onClick={() => onExecuteAction(event.id, act.action)}
+                      onClick={() => setSelectedActionState(act.action)}
                       className={`p-4 rounded-xl border-2 flex items-center justify-between cursor-pointer transition-all ${
-                        isOptimal
-                          ? 'border-blue-600 bg-blue-50/90 ring-4 ring-blue-500/10 font-bold shadow-xs'
+                        isSelected
+                          ? 'border-blue-600 bg-blue-50/90 ring-4 ring-blue-500/20 font-bold shadow-sm'
                           : 'border-slate-200 bg-slate-50/60 hover:bg-slate-100'
                       }`}
                     >
                       <div className="flex items-center space-x-3">
+                        <input
+                          type="radio"
+                          name="strategy_selection"
+                          checked={isSelected}
+                          onChange={() => setSelectedActionState(act.action)}
+                          className="w-4 h-4 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                        />
                         <span className="font-sans font-bold text-slate-900 text-sm">{act.display_name}</span>
                         {isOptimal && (
                           <span className="bg-blue-600 text-white text-[10px] px-2.5 py-0.5 rounded-full font-sans font-extrabold uppercase tracking-wider">
                             OPTIMAL
                           </span>
                         )}
+                        {isSelected && !isOptimal && (
+                          <span className="bg-slate-900 text-slate-100 text-[10px] px-2 py-0.5 rounded-full font-sans font-bold uppercase tracking-wider">
+                            SELECTED
+                          </span>
+                        )}
                       </div>
                       <div className="text-right">
-                        <span className={`font-bold text-base ${isOptimal ? 'text-blue-950' : 'text-slate-800'}`}>
+                        <span className={`font-bold text-base ${isSelected ? 'text-blue-950' : 'text-slate-800'}`}>
                           {formatINR(act.expected_net_value)}
                         </span>
                         <span className="text-[11px] text-slate-500 block font-sans">
@@ -206,6 +230,18 @@ export default function DecisionCenter({ caseData, onExecuteAction, onSelectCust
                     </div>
                   );
                 })}
+              </div>
+
+              {/* Explicit Execute Action CTA Button */}
+              <div className="pt-2">
+                <button
+                  onClick={() => onExecuteAction(event.id, activeSelectedAction)}
+                  className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-extrabold font-mono shadow-md flex items-center justify-center gap-2 transition-all"
+                >
+                  <Zap className="w-4 h-4 text-amber-300" />
+                  <span>Execute Selected Strategy ({activeSelectedAction.replace('_', ' ')})</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               </div>
             </div>
 
@@ -229,82 +265,91 @@ export default function DecisionCenter({ caseData, onExecuteAction, onSelectCust
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 font-sans">
-                {fourArmList.map((arm) => (
-                  <div
-                    key={arm.action}
-                    className={`group relative p-4 rounded-xl border transition-all ${
-                      arm.is_optimal
-                        ? 'bg-white border-blue-500 shadow-md ring-2 ring-blue-500/20'
-                        : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-xs'
-                    }`}
-                  >
-                    {/* Arm Header Badge */}
-                    <div className="flex justify-between items-start mb-2">
-                      <span className={`text-[9px] font-mono font-extrabold px-2 py-0.5 rounded uppercase ${
-                        arm.is_optimal
-                          ? 'bg-blue-600 text-white'
-                          : arm.action === 'WAIT'
-                          ? 'bg-slate-100 text-slate-700 border border-slate-200'
-                          : arm.action === 'DISCOUNT'
-                          ? 'bg-amber-100 text-amber-900 border border-amber-300'
-                          : 'bg-emerald-100 text-emerald-900 border border-emerald-300'
-                      }`}>
-                        {arm.is_optimal ? '★ OPTIMAL ARM' : arm.action === 'WAIT' ? 'ORGANIC CONTROL' : arm.action === 'DISCOUNT' ? 'MARGIN DISCOUNT' : 'LOW COST NUDGE'}
-                      </span>
-                    </div>
+                {fourArmList.map((arm) => {
+                  const isSelectedArm = activeSelectedAction === arm.action;
+                  return (
+                    <div
+                      key={arm.action}
+                      onClick={() => setSelectedActionState(arm.action)}
+                      className={`group relative p-4 rounded-xl border transition-all cursor-pointer ${
+                        isSelectedArm
+                          ? 'bg-white border-blue-600 shadow-md ring-2 ring-blue-600/30'
+                          : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-xs'
+                      }`}
+                    >
+                      {/* Arm Header Badge */}
+                      <div className="flex justify-between items-start mb-2">
+                        <span className={`text-[9px] font-mono font-extrabold px-2 py-0.5 rounded uppercase ${
+                          arm.is_optimal
+                            ? 'bg-blue-600 text-white'
+                            : arm.action === 'WAIT'
+                            ? 'bg-slate-100 text-slate-700 border border-slate-200'
+                            : arm.action === 'DISCOUNT'
+                            ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                            : 'bg-emerald-100 text-emerald-900 border border-emerald-300'
+                        }`}>
+                          {arm.is_optimal ? '★ OPTIMAL ARM' : arm.action === 'WAIT' ? 'ORGANIC CONTROL' : arm.action === 'DISCOUNT' ? 'MARGIN DISCOUNT' : 'LOW COST NUDGE'}
+                        </span>
+                        {isSelectedArm && (
+                          <span className="text-[9px] font-mono font-bold text-blue-700 bg-blue-100 px-1.5 py-0.5 rounded border border-blue-300">
+                            ✓ ACTIVE
+                          </span>
+                        )}
+                      </div>
 
-                    {/* Arm Title */}
-                    <h4 className="text-xs font-bold text-slate-900 tracking-tight">{arm.display_name}</h4>
-                    <span className="text-[10px] text-slate-500 font-mono block mb-2">{arm.channel_type}</span>
+                      {/* Arm Title */}
+                      <h4 className="text-xs font-bold text-slate-900 tracking-tight">{arm.display_name}</h4>
+                      <span className="text-[10px] text-slate-500 font-mono block mb-2">{arm.channel_type}</span>
 
-                    {/* Key Metrics */}
-                    <div className="space-y-1.5 border-t border-b border-slate-100 py-2 my-2 text-xs font-mono">
-                      <div className="flex justify-between items-center">
-                        <span className="text-slate-500 text-[10px] uppercase">Rec Rate:</span>
-                        <span className="font-bold text-slate-900">
-                          {(arm.recovery_probability * 100).toFixed(1)}%
-                          {arm.delta_p > 0 && <span className="text-emerald-600 text-[10px] font-extrabold ml-1">(+{(arm.delta_p * 100).toFixed(1)}%)</span>}
+                      {/* Key Metrics */}
+                      <div className="space-y-1.5 border-t border-b border-slate-100 py-2 my-2 text-xs font-mono">
+                        <div className="flex justify-between items-center">
+                          <span className="text-slate-500 text-[10px] uppercase">Rec Rate:</span>
+                          <span className="font-bold text-slate-900">
+                            {((arm.recovery_probability || 0) * 100).toFixed(1)}%
+                            {(arm.delta_p || 0) > 0 && <span className="text-emerald-600 text-[10px] font-extrabold ml-1">(+{((arm.delta_p || 0) * 100).toFixed(1)}%)</span>}
+                          </span>
+                        </div>
+
+                        <div className="flex justify-between items-center text-[11px]">
+                          <span className="text-slate-500 text-[10px] uppercase">Direct Cost:</span>
+                          <span className="font-semibold text-slate-800">₹{(arm.direct_cost || 0).toFixed(2)}</span>
+                        </div>
+
+                        <div className="flex justify-between items-center text-[11px]">
+                          <span className="text-slate-500 text-[10px] uppercase">Margin Cost:</span>
+                          <span className={`font-semibold ${(arm.margin_cost || 0) > 0 ? 'text-amber-700 font-bold' : 'text-slate-800'}`}>
+                            ₹{(arm.margin_cost || 0).toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Net Yield Amount */}
+                      <div className="pt-1">
+                        <span className="text-[9px] font-mono text-slate-500 uppercase block">Expected Net Yield (EINRV)</span>
+                        <span className={`text-base font-extrabold num-tabular ${arm.is_optimal ? 'text-blue-600' : 'text-slate-900'}`}>
+                          {formatINR(arm.expected_net_value)}
                         </span>
                       </div>
 
-                      <div className="flex justify-between items-center text-[11px]">
-                        <span className="text-slate-500 text-[10px] uppercase">Direct Cost:</span>
-                        <span className="font-semibold text-slate-800">₹{arm.direct_cost.toFixed(2)}</span>
-                      </div>
-
-                      <div className="flex justify-between items-center text-[11px]">
-                        <span className="text-slate-500 text-[10px] uppercase">Margin Cost:</span>
-                        <span className={`font-semibold ${arm.margin_cost > 0 ? 'text-amber-700 font-bold' : 'text-slate-800'}`}>
-                          ₹{arm.margin_cost.toFixed(2)}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Net Yield Amount */}
-                    <div className="pt-1">
-                      <span className="text-[9px] font-mono text-slate-500 uppercase block">Expected Net Yield (EINRV)</span>
-                      <span className={`text-base font-extrabold num-tabular ${arm.is_optimal ? 'text-blue-600' : 'text-slate-900'}`}>
-                        {formatINR(arm.expected_net_value)}
-                      </span>
-                    </div>
-
-                    {/* Hover Formula Tooltip */}
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute left-0 right-0 -bottom-2 translate-y-full z-30 p-3 bg-slate-950 text-white rounded-xl shadow-2xl border border-slate-800 text-[10px] font-mono pointer-events-none space-y-1">
-                      <div className="text-blue-400 font-bold border-b border-slate-800 pb-1">
-                        EINRV Formula Substitution ({arm.action}):
-                      </div>
-                      <div className="text-slate-300">
-                        EINRV = V_order × [P_nat + ΔP] - DirectCost - MarginCost
-                      </div>
-                      <div className="text-emerald-400 font-bold">
-                        = ₹{vOrder?.toLocaleString('en-IN')} × [{(arm.p_nat * 100).toFixed(1)}% + {(arm.delta_p * 100).toFixed(1)}%] - ₹{arm.direct_cost.toFixed(2)} - ₹{arm.margin_cost.toFixed(2)}
-                      </div>
-                      <div className="text-white font-extrabold text-[11px]">
-                        = {formatINR(arm.expected_net_value)} Net Yield
+                      {/* Hover Formula Tooltip */}
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute left-0 right-0 -bottom-2 translate-y-full z-30 p-3 bg-slate-950 text-white rounded-xl shadow-2xl border border-slate-800 text-[10px] font-mono pointer-events-none space-y-1">
+                        <div className="text-blue-400 font-bold border-b border-slate-800 pb-1">
+                          EINRV Formula Substitution ({arm.action}):
+                        </div>
+                        <div className="text-slate-300">
+                          EINRV = V_order × [P_nat + ΔP] - DirectCost - MarginCost
+                        </div>
+                        <div className="text-emerald-400 font-bold">
+                          {`= ₹${(vOrder || 0).toLocaleString('en-IN')} × [${((arm.p_nat || 0) * 100).toFixed(1)}% + ${((arm.delta_p || 0) * 100).toFixed(1)}%] - ₹${(arm.direct_cost || 0).toFixed(2)} - ₹${(arm.margin_cost || 0).toFixed(2)}`}
+                        </div>
+                        <div className="text-white font-extrabold text-[11px]">
+                          = {formatINR(arm.expected_net_value)} Net Yield
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
@@ -442,25 +487,25 @@ export default function DecisionCenter({ caseData, onExecuteAction, onSelectCust
                   </div>
                 </div>
 
-                {/* Razorpay API Code Showcase Toggle Button */}
+                {/* RecoverIQ API Code Showcase Toggle Button */}
                 <div className="pt-2 border-t border-slate-800">
                   <button
                     onClick={() => setShowCodeShowcase(!showCodeShowcase)}
                     className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-bold font-mono flex items-center justify-center gap-1.5 transition-all border border-slate-700"
                   >
                     <Code className="w-3.5 h-3.5 text-blue-400" />
-                    <span>{showCodeShowcase ? 'Hide Razorpay API SDK Code & HMAC Payload' : '💻 Inspect Razorpay API Request Payload & HMAC SDK Integration Code'}</span>
+                    <span>{showCodeShowcase ? 'Hide RecoverIQ API SDK Code & HMAC Payload' : '💻 Inspect RecoverIQ API Request Payload & HMAC SDK Integration Code'}</span>
                   </button>
 
                   {showCodeShowcase && (
                     <div className="mt-3 p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-3 font-mono text-[11px] text-slate-300">
                       <div className="text-emerald-400 font-bold flex items-center justify-between border-b border-slate-800 pb-2">
-                        <span>Razorpay API v1/payment_links Integration Code (Node.js)</span>
-                        <span className="text-[10px] text-slate-500">POST https://api.razorpay.com/v1/payment_links</span>
+                        <span>RecoverIQ API v1/payment_links Integration Code (Node.js)</span>
+                        <span className="text-[10px] text-slate-500">POST https://api.recoveriq.com/v1/payment_links</span>
                       </div>
                       <pre className="p-3 bg-slate-900 rounded-lg text-blue-300 overflow-x-auto text-[10px] font-mono leading-relaxed">
-{`// 1. Dispatch Razorpay Payment Link API Payload
-const razorpayPayload = {
+{`// 1. Dispatch RecoverIQ Payment Link API Payload
+const recoveriqPayload = {
   amount: ${event.amount * 100}, // Amount in paise (₹${event.amount})
   currency: "INR",
   accept_partial: false,
@@ -470,18 +515,18 @@ const razorpayPayload = {
     email: "${event.customer_email || 'customer@example.com'}"
   },
   notify: { sms: true, whatsapp: true },
-  callback_url: "https://radar.merchant.com/api/webhook/razorpay",
+  callback_url: "https://radar.merchant.com/api/webhook/recoveriq",
   callback_method: "get"
 };
 
-// 2. Razorpay Webhook HMAC-SHA256 Verification Logic
+// 2. RecoverIQ Webhook HMAC-SHA256 Verification Logic
 const crypto = require('crypto');
 const expectedSignature = crypto
-  .createHmac('sha256', process.env.RAZORPAY_WEBHOOK_SECRET)
+  .createHmac('sha256', process.env.RECOVERIQ_WEBHOOK_SECRET)
   .update(JSON.stringify(webhookBody))
   .digest('hex');
 
-if (expectedSignature === req.headers['x-razorpay-signature']) {
+if (expectedSignature === req.headers['x-recoveriq-signature']) {
   // HMAC verified -> Flip Leak status to RECOVERED!
 }`}
                       </pre>

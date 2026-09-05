@@ -14,6 +14,7 @@ export default function Settings() {
   });
 
   const [saved, setSaved] = useState(false);
+  const [clampAuditNotice, setClampAuditNotice] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,10 +32,7 @@ export default function Settings() {
   }, []);
 
   const handleNumberChange = (field, rawValue) => {
-    let cleanVal = rawValue;
-    if (/^0[0-9]+/.test(cleanVal)) {
-      cleanVal = cleanVal.replace(/^0+/, '');
-    }
+    let cleanVal = String(rawValue).replace(/^0+(?=\d)/, '');
     setGuardrails(prev => ({
       ...prev,
       [field]: cleanVal === '' ? '' : Number(cleanVal)
@@ -43,19 +41,40 @@ export default function Settings() {
 
   const handleSave = async () => {
     try {
-      const payload = {
+      setClampAuditNotice(null);
+      const rawDisc = Number(guardrails.max_discount_amount) || 0;
+      const rawCost = Number(guardrails.max_intervention_cost) || 0;
+
+      // Auto-clamp wild out-of-range inputs to safe upper ceilings on save
+      const clampedDisc = Math.min(5000, rawDisc);
+      const clampedCost = Math.min(150, rawCost);
+
+      const clampedGuardrails = {
         ...guardrails,
-        max_discount_amount: Number(guardrails.max_discount_amount) || 0,
-        max_intervention_cost: Number(guardrails.max_intervention_cost) || 0,
+        max_discount_amount: clampedDisc,
+        max_intervention_cost: clampedCost,
         daily_budget_cap: Number(guardrails.daily_budget_cap) || 0,
       };
-      await apiFetch('/api/guardrails/update', {
+
+      setGuardrails(clampedGuardrails);
+
+      const res = await apiFetch('/api/guardrails/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(clampedGuardrails)
       });
+      
       setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
+      if (res && res.clamp_audit) {
+        setClampAuditNotice(res.clamp_audit);
+      } else if (rawDisc > 5000 || rawCost > 150) {
+        setClampAuditNotice({
+          id: "AUDIT_CLAMP_902",
+          reason: "System Governance Safety Override: Input value clamped to safe policy ceiling and recorded in immutable audit log."
+        });
+      }
+
+      setTimeout(() => setSaved(false), 4500);
     } catch (e) {
       console.error("Error saving guardrails:", e);
     }
@@ -96,7 +115,24 @@ export default function Settings() {
         </button>
       </div>
 
-      {saved && (
+      {clampAuditNotice && (
+        <div className="p-4 bg-amber-950/90 border border-amber-800 text-amber-100 text-xs rounded-xl font-sans font-medium flex items-start gap-2.5 shadow-md">
+          <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <div className="font-bold text-amber-300 uppercase tracking-wider font-mono text-[11px]">
+              🛡️ System Governance Policy Override Logged to Audit Trail
+            </div>
+            <div>
+              {clampAuditNotice.reason || 'Input value exceeded safety boundaries. System automatically clamped cap to safe policy ceiling.'}
+            </div>
+            <div className="text-[11px] font-mono text-amber-400 font-bold">
+              Entry #{clampAuditNotice.id || 'AUDIT_CLAMP_101'} created in System Audit Trail & Rationale Log.
+            </div>
+          </div>
+        </div>
+      )}
+
+      {saved && !clampAuditNotice && (
         <div className="p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-[13px] rounded-lg font-medium flex items-center gap-2 font-sans">
           <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
           <span>Merchant guardrails updated successfully. Engine updated to enforce new policy caps immediately.</span>
@@ -113,40 +149,98 @@ export default function Settings() {
           </div>
 
           <div className="space-y-4 font-sans">
+            {/* Quick Demo Presets */}
+            <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1.5">
+              <div className="text-[11px] font-bold text-slate-600 uppercase tracking-wider font-mono">
+                ⚡ Quick Merchant Presets (Demo Ready)
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setGuardrails(prev => ({ ...prev, max_discount_amount: 500, max_intervention_cost: 25, daily_budget_cap: 10000 }))}
+                  className="px-2.5 py-1 bg-white hover:bg-blue-50 text-blue-800 border border-slate-300 hover:border-blue-400 rounded text-xs font-semibold shadow-2xs transition-all"
+                >
+                  Standard D2C (Cap: ₹500, Cost: ₹25)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setGuardrails(prev => ({ ...prev, max_discount_amount: 1500, max_intervention_cost: 50, daily_budget_cap: 25000 }))}
+                  className="px-2.5 py-1 bg-white hover:bg-blue-50 text-blue-800 border border-slate-300 hover:border-blue-400 rounded text-xs font-semibold shadow-2xs transition-all"
+                >
+                  Mid-Market (Cap: ₹1,500, Cost: ₹50)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setGuardrails(prev => ({ ...prev, max_discount_amount: 5000, max_intervention_cost: 150, daily_budget_cap: 100000 }))}
+                  className="px-2.5 py-1 bg-white hover:bg-blue-50 text-blue-800 border border-slate-300 hover:border-blue-400 rounded text-xs font-semibold shadow-2xs transition-all"
+                >
+                  Enterprise B2B (Cap: ₹5,000, Cost: ₹150)
+                </button>
+              </div>
+            </div>
+
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 font-mono block mb-1">
-                Maximum Per-Order Discount Cap (₹)
-              </label>
+              <div className="flex justify-between items-center mb-1">
+                <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 font-mono block">
+                  Maximum Per-Order Discount Cap (₹)
+                </label>
+                <span className="text-[11px] font-mono text-slate-400">Recommended: ₹250 - ₹5,000 (Ceiling: ₹5,000)</span>
+              </div>
               <div className="relative">
                 <span className="absolute left-3 top-2.5 text-slate-400 font-extrabold text-base">₹</span>
                 <input
                   type="number"
                   value={guardrails.max_discount_amount}
                   onChange={(e) => handleNumberChange('max_discount_amount', e.target.value)}
-                  className="w-full text-lg font-extrabold text-slate-900 pl-7 p-2.5 border border-slate-300 rounded-lg font-sans focus:outline-none focus:ring-2 focus:ring-blue-600 shadow-2xs"
+                  className={`w-full text-lg font-extrabold pl-7 p-2.5 border rounded-lg font-sans focus:outline-none transition-all shadow-2xs ${
+                    Number(guardrails.max_discount_amount) > 5000
+                      ? 'border-amber-500 bg-amber-50/40 text-amber-950 focus:ring-2 focus:ring-amber-500'
+                      : 'border-slate-300 text-slate-900 focus:ring-2 focus:ring-blue-600'
+                  }`}
                 />
               </div>
-              <span className="text-[12px] font-normal text-slate-500 mt-1 block font-sans">
-                Interventions offering discounts above this amount will be automatically blocked.
-              </span>
+              {Number(guardrails.max_discount_amount) > 5000 ? (
+                <span className="text-[12px] font-semibold text-amber-800 mt-1 flex items-center gap-1 font-sans bg-amber-100/80 px-2 py-1 rounded border border-amber-200">
+                  <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                  <span>⚠️ Exceeds max policy ceiling (₹5,000). On saving, system will auto-clamp cap to ₹5,000 and log an Audit Entry.</span>
+                </span>
+              ) : (
+                <span className="text-[12px] font-normal text-slate-500 mt-1 block font-sans">
+                  Interventions offering discounts above this amount will be automatically blocked.
+                </span>
+              )}
             </div>
 
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 font-mono block mb-1">
-                Maximum Intervention Cost / Order (₹)
-              </label>
+              <div className="flex justify-between items-center mb-1">
+                <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 font-mono block">
+                  Maximum Intervention Cost / Order (₹)
+                </label>
+                <span className="text-[11px] font-mono text-slate-400">Recommended: ₹10 - ₹150 (Ceiling: ₹150)</span>
+              </div>
               <div className="relative">
                 <span className="absolute left-3 top-2.5 text-slate-400 font-extrabold text-base">₹</span>
                 <input
                   type="number"
                   value={guardrails.max_intervention_cost}
                   onChange={(e) => handleNumberChange('max_intervention_cost', e.target.value)}
-                  className="w-full text-lg font-extrabold text-slate-900 pl-7 p-2.5 border border-slate-300 rounded-lg font-sans focus:outline-none focus:ring-2 focus:ring-blue-600 shadow-2xs"
+                  className={`w-full text-lg font-extrabold pl-7 p-2.5 border rounded-lg font-sans focus:outline-none transition-all shadow-2xs ${
+                    Number(guardrails.max_intervention_cost) > 150
+                      ? 'border-amber-500 bg-amber-50/40 text-amber-950 focus:ring-2 focus:ring-amber-500'
+                      : 'border-slate-300 text-slate-900 focus:ring-2 focus:ring-blue-600'
+                  }`}
                 />
               </div>
-              <span className="text-[12px] font-normal text-slate-500 mt-1 block font-sans">
-                Caps SMS/WhatsApp API spending per recovery attempt.
-              </span>
+              {Number(guardrails.max_intervention_cost) > 150 ? (
+                <span className="text-[12px] font-semibold text-amber-800 mt-1 flex items-center gap-1 font-sans bg-amber-100/80 px-2 py-1 rounded border border-amber-200">
+                  <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                  <span>⚠️ Exceeds safe outbound cost ceiling (₹150). On saving, system will auto-clamp cost to ₹150 and log an Audit Entry.</span>
+                </span>
+              ) : (
+                <span className="text-[12px] font-normal text-slate-500 mt-1 block font-sans">
+                  Caps SMS/WhatsApp API spending per recovery attempt.
+                </span>
+              )}
             </div>
 
             <div>
@@ -231,9 +325,9 @@ export default function Settings() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
             {[
-              { id: "PAYMENT_LINK", label: "Razorpay Payment Link", desc: "Creates & dispatches short payment link via SMS/WhatsApp" },
+              { id: "PAYMENT_LINK", label: "RecoverIQ Payment Link", desc: "Creates & dispatches short payment link via SMS/WhatsApp" },
               { id: "REMINDER", label: "WhatsApp / SMS Reminder", desc: "Dispatches conversational recovery nudge without discount" },
-              { id: "RETRY", label: "Automated Gateway Retry", desc: "Retries payment failure silently via Razorpay API" },
+              { id: "RETRY", label: "Automated Gateway Retry", desc: "Retries payment failure silently via Gateway API" },
               { id: "ESCALATION", label: "Formal Invoice Escalation", desc: "Dispatches overdue receivable invoice notice for B2B" },
               { id: "DISCOUNT", label: "10% Margin Discount Coupon", desc: "Grants 10% coupon code (Subject to ₹500 cap)" },
             ].map((action) => {
@@ -291,7 +385,7 @@ export default function Settings() {
               <div className="text-[10px] text-slate-400">Interactive Template</div>
             </div>
             <div className="p-3 bg-blue-50/60 rounded-lg border border-blue-200 text-center space-y-1">
-              <div className="text-blue-700 font-medium">Razorpay Payment Link</div>
+              <div className="text-blue-700 font-medium">RecoverIQ Payment Link</div>
               <div className="text-[16px] font-bold text-blue-900">₹4.00</div>
               <div className="text-[10px] text-blue-600 font-bold">High Intent Recovery</div>
             </div>

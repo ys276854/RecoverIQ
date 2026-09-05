@@ -39,7 +39,7 @@ class RazorpayClientIntegration:
             },
             "reminder_enable": True,
             "notes": {
-                "engine": "Razorpay Revenue Leak Radar",
+                "engine": "RecoverIQ",
                 "policy": "EINRV_Optimal"
             }
         }

@@ -29,12 +29,12 @@ export default function AppShell({
   const [webhookSimulating, setWebhookSimulating] = useState(false);
   const [webhookMessage, setWebhookMessage] = useState('');
 
-  const TOUR_STEPS = [
+      const TOUR_STEPS = [
     {
       step: 1,
       tab: 'overview',
       title: '1. Measured Money Recovered (Track Focus)',
-      subtitle: 'Razorpay explicit mandate: measured money recovered across a batch.',
+      subtitle: 'RecoverIQ explicit mandate: measured money recovered across a batch.',
       talkingPoint: 'Lead with ₹11.2L recovered across 12,483 transactions (60.8% post-intervention recovery rate).',
       highlight: 'Batch Recovery Funnel & Net Recovery Yield (₹1,82,350.00)'
     },
@@ -57,8 +57,8 @@ export default function AppShell({
     {
       step: 4,
       tab: 'queue',
-      title: '4. Real Live Razorpay Checkout Execution',
-      subtitle: 'Click "Execute Recovery" → Live Razorpay test link → Real-time status flip.',
+      title: '4. Real Live Checkout Execution',
+      subtitle: 'Click "Execute Recovery" → Live payment link → Real-time status flip.',
       talkingPoint: 'Judges love seeing live test links flip status to RECOVERED (₹12,500) upon payment.',
       highlight: 'Live test payment link generation & checkout'
     },
@@ -129,7 +129,7 @@ export default function AppShell({
         <div className="flex items-center space-x-2 shrink-0">
           <span className="inline-flex items-center gap-1.5 bg-blue-950/80 text-blue-300 px-2 py-0.5 rounded border border-blue-800/60 font-bold">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Razorpay API: Connected (Live Test Mode Keys) &bull; 18ms Latency &bull; HMAC Active</span>
+            <span>RecoverIQ API: Connected &bull; 18ms Latency &bull; HMAC Active</span>
           </span>
           <span className="text-slate-500 hidden xl:inline">
             Causal Engine (ΔP × Value - Cost)
@@ -154,10 +154,10 @@ export default function AppShell({
               onClick={handleSimulateWebhook}
               disabled={webhookSimulating}
               className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 border border-emerald-500/40 text-[11px] font-bold transition-all shadow-xs"
-              title="Simulate incoming Razorpay payment.failed webhook payload (HMAC SHA256)"
+              title="Simulate incoming RecoverIQ payment.failed webhook payload (HMAC SHA256)"
             >
               <Radio className="w-3 h-3 text-emerald-400 animate-pulse" />
-              <span>{webhookSimulating ? 'Ingesting...' : '⚡ Webhook Simulator (Razorpay HMAC Payload)'}</span>
+              <span>{webhookSimulating ? 'Ingesting...' : '⚡ Webhook Simulator (RecoverIQ HMAC Payload)'}</span>
             </button>
           )}
 
@@ -203,13 +203,13 @@ export default function AppShell({
 
             <div className="flex items-center space-x-2 cursor-pointer" onClick={() => onNavigate('overview')}>
               <span className="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 font-sans italic">
-                Razor<span className="text-blue-600">pay</span>
+                Recover<span className="text-blue-600">IQ</span>
               </span>
               <span className="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded border border-emerald-300 font-mono">
-                Agentic Stack
+                AI Engine
               </span>
               <span className="hidden md:inline text-xs font-bold text-slate-500 font-mono pl-2 border-l border-slate-200">
-                LEAK RADAR
+                REVENUE RECOVERY
               </span>
             </div>
           </div>

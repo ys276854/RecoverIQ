@@ -32,7 +32,7 @@ class OnboardingRequest(BaseModel):
 
 class AuthManager:
     """
-    Secure session & user management layer for Razorpay Revenue Leak Radar.
+    Secure session & user management layer for RecoverIQ — AI-powered revenue recovery intelligence.
     Uses salted SHA-256 password hashing and token-based authentication.
     """
 

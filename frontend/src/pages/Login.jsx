@@ -7,25 +7,31 @@ export default function Login({ onLoginSuccess, onNavigateSignup }) {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
+  const [forgotSent, setForgotSent] = useState(false);
   const [error, setError] = useState('');
+
+  const handleForgotPassword = () => {
+    setForgotSent(true);
+    setTimeout(() => setForgotSent(false), 5000);
+  };
   const [loading, setLoading] = useState(false);
   const [selectedEdgeCase, setSelectedEdgeCase] = useState('mandate');
 
   const edgeCases = {
     mandate: [
-      "[TRACE 04:12.8] Razorpay Webhook: Mandate Auth Timeout #ORD-98124",
+      "[TRACE 04:12.8] RecoverIQ Webhook: Mandate Auth Timeout #ORD-98124",
       "[TRACE 04:12.9] Evaluating baseline P_nat (Organic Recovery Prob): 0.88",
       "[TRACE 04:13.1] Decision: WAIT / SUPPRESS NUDGE. Customer organic retry imminent.",
       "[TRACE 04:13.2] Result: Saved ₹6.50 WhatsApp API fee. Margin intact."
     ],
     timeout: [
-      "[TRACE 04:14.2] Razorpay Webhook: HDFC Gateway Auth Timeout #ORD-8271",
+      "[TRACE 04:14.2] RecoverIQ Webhook: HDFC Gateway Auth Timeout #ORD-8271",
       "[TRACE 04:14.4] Evaluating baseline P_nat: 0.12 (High friction drop-off)",
-      "[TRACE 04:14.6] Decision: ACT -> Generate Razorpay Payment Link + SMS Nudge",
+      "[TRACE 04:14.6] Decision: ACT -> Generate RecoverIQ Payment Link + SMS Nudge",
       "[TRACE 04:14.8] Result: Expected Incremental Recovery: +₹18,500"
     ],
     b2b: [
-      "[TRACE 04:16.1] Razorpay Webhook: Corporate Invoice Failure #ORD-4491",
+      "[TRACE 04:16.1] RecoverIQ Webhook: Corporate Invoice Failure #ORD-4491",
       "[TRACE 04:16.3] Customer LTV: ₹4,50,000 | P_nat: 0.42",
       "[TRACE 04:16.5] Decision: ACT -> Dispatches Formal Invoice Escalation Link",
       "[TRACE 04:16.7] Result: Protected High-LTV Enterprise Receivable"
@@ -75,13 +81,13 @@ export default function Login({ onLoginSuccess, onNavigateSignup }) {
           {/* Logo & Product Badges */}
           <div className="flex items-center space-x-3">
             <span className="font-extrabold text-2xl tracking-tight text-white font-sans italic">
-              Razor<span className="text-blue-500">pay</span>
+              Recover<span className="text-blue-500">IQ</span>
             </span>
             <span className="bg-emerald-950/90 text-emerald-300 text-xs font-bold px-2.5 py-0.5 rounded-full border border-emerald-800/80 font-mono">
-              Agentic Stack
+              AI Engine
             </span>
             <span className="text-xs font-semibold text-blue-400 border-l border-slate-800 pl-3 font-mono">
-              LEAKRADAR ENGINE
+              REVENUE RECOVERY
             </span>
           </div>
 
@@ -142,7 +148,7 @@ export default function Login({ onLoginSuccess, onNavigateSignup }) {
         </div>
 
         <div className="pt-8 text-xs text-slate-500 font-mono flex items-center justify-between">
-          <span>Razorpay AI Buildathon 2026</span>
+          <span>RecoverIQ — AI-powered revenue recovery intelligence</span>
           <span>Engine Status: Operational</span>
         </div>
       </div>
@@ -186,6 +192,13 @@ export default function Login({ onLoginSuccess, onNavigateSignup }) {
               <p className="text-sm font-normal text-slate-400 mt-1 font-sans">Access your revenue intelligence cockpit</p>
             </div>
 
+            {forgotSent && (
+              <div className="p-3.5 bg-emerald-950/80 border border-emerald-800/80 rounded-xl text-emerald-200 text-xs font-medium flex items-center gap-2 font-sans">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>Password reset link sent to registered merchant email. For instant demo access, click 'Log In as Demo Merchant'.</span>
+              </div>
+            )}
+
             {error && (
               <div className="p-3.5 bg-rose-950/80 border border-rose-800/80 rounded-xl text-rose-200 text-xs font-medium flex items-center gap-2 font-sans">
                 <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
@@ -210,7 +223,11 @@ export default function Login({ onLoginSuccess, onNavigateSignup }) {
               <div>
                 <div className="flex justify-between items-center mb-1.5">
                   <label className="text-xs font-semibold text-slate-300 font-sans">Password</label>
-                  <button type="button" className="text-xs text-blue-400 hover:underline font-medium">
+                  <button
+                    type="button"
+                    onClick={handleForgotPassword}
+                    className="text-xs text-blue-400 hover:underline font-medium"
+                  >
                     Forgot password?
                   </button>
                 </div>

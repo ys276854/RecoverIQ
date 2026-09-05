@@ -69,13 +69,13 @@ export default function CustomerProfile({ customerId, onSelectCustomer, onBack }
     },
     {
       status: 'ACTION',
-      title: 'Razorpay Payment Link Sent via SMS & WhatsApp',
+      title: 'RecoverIQ Payment Link Sent via SMS & WhatsApp',
       description: 'Dispatched link rzp.io/i/rec_paylink_8271. Guardrails checked: Spacing ≥ 6h ✓, Discount ≤ ₹500 ✓.',
       timestamp: 'Today, 11:16 AM'
     },
     {
       status: 'SUCCESS',
-      title: 'Payment Captured & Verified via Razorpay Webhook',
+      title: 'Payment Captured & Verified via RecoverIQ Webhook',
       description: 'Customer completed payment via UPI. ₹12,500 captured and settled. Recovery engine closed leak case.',
       timestamp: 'Today, 11:28 AM'
     }

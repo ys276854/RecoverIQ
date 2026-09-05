@@ -204,7 +204,7 @@ export default function App() {
             step: 3,
             logs: [
               ...prev.logs,
-              `Razorpay Test Mode API invoked (${action === 'PAYMENT_LINK' ? '/v1/payment_links' : '/v1/invoices'})...`,
+              `RecoverIQ Test Mode API invoked (${action === 'PAYMENT_LINK' ? '/v1/payment_links' : '/v1/invoices'})...`,
               `Generated link: ${data.razorpay_response?.short_url || 'https://rzp.io/i/rec_paylink_8271'}`,
               `Appended entry #${data.audit_entry?.id || 'AUDIT_102'} to Audit Trail`
             ],
@@ -224,7 +224,7 @@ export default function App() {
       setExecutionState({
         isResilienceDemo: true,
         action: 'PAYMENT_LINK (API RETRY SIMULATION)',
-        logs: ['Initiating Payment Link dispatch via Razorpay API...'],
+        logs: ['Initiating Payment Link dispatch via RecoverIQ API...'],
         done: false
       });
 
@@ -233,7 +233,7 @@ export default function App() {
           ...prev,
           logs: [
             ...prev.logs,
-            '❌ Razorpay API Failure: 502 Bad Gateway / Gateway Timeout (Network Error)',
+            '❌ Gateway API Failure: 502 Bad Gateway / Gateway Timeout (Network Error)',
             '⚠️ Primary API endpoint unreachable. Circuit Breaker Tripped!'
           ]
         }));
@@ -276,7 +276,7 @@ export default function App() {
   if (loadingAuth) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center font-mono text-slate-300 text-xs">
-        Initializing Razorpay Revenue Leak Radar...
+        Initializing RecoverIQ — AI-powered revenue recovery intelligence...
       </div>
     );
   }
@@ -356,7 +356,7 @@ export default function App() {
                 <div className="flex items-center space-x-2">
                   <Zap className="w-4 h-4 text-blue-400 animate-pulse" />
                   <h3 className="font-bold text-xs uppercase tracking-wider font-mono text-white">
-                    EXECUTING RECOVERY ACTION &bull; {executionState.action} (Razorpay API v1/payment_links - Live Test Mode API)
+                    EXECUTING RECOVERY ACTION &bull; {executionState.action} (RecoverIQ Payment Engine API)
                   </h3>
                 </div>
                 <button onClick={() => setExecutionState(null)} className="text-slate-400 hover:text-slate-200">
@@ -399,7 +399,7 @@ export default function App() {
                         </span>
                       </div>
                       <p className="text-[11px] text-emerald-300 font-sans">
-                        Customer Rahul Sharma completed test payment via Razorpay Payment Link. Case status flipped live to <strong className="text-white bg-emerald-800 px-1.5 py-0.5 rounded">RECOVERED (₹12,500.00)</strong>!
+                        Customer Rahul Sharma completed test payment via Payment Link. Case status flipped live to <strong className="text-white bg-emerald-800 px-1.5 py-0.5 rounded">RECOVERED (₹12,500.00)</strong>!
                       </p>
                     </div>
                   ) : (
@@ -407,7 +407,7 @@ export default function App() {
                       <div className="p-3 bg-emerald-950/60 border border-emerald-800/80 rounded-lg text-emerald-300 text-xs flex justify-between items-center font-mono">
                         <div>
                           <span className="font-bold block">STATUS: RECOVERY ACTION SENT</span>
-                          <span className="text-[10px] text-emerald-400">Razorpay Test Mode Link Dispatched</span>
+                          <span className="text-[10px] text-emerald-400">RecoverIQ Payment Link Dispatched</span>
                         </div>
                         <a
                           href={executionState.resultData?.razorpay_response?.short_url || 'https://rzp.io/i/rec_paylink_8271'}
@@ -427,7 +427,7 @@ export default function App() {
                             paid: true,
                             logs: [
                               ...prev.logs,
-                              '⚡ Incoming Razorpay Webhook Event: payment.captured (#pay_test_991204)',
+                              '⚡ Incoming RecoverIQ Webhook Event: payment.captured (#pay_test_991204)',
                               '✓ HMAC-SHA256 Signature Verified (Secret: rzp_sec_live_991823)',
                               '🎉 CASE RECOVERED: Case #LEAK_8271 status updated to RECOVERED (₹12,500 settled)'
                             ]

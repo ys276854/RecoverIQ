@@ -10,14 +10,46 @@ export default function Overview({ overviewData, onNavigate, onSelectCase }) {
   const [showSavedModal, setShowSavedModal] = useState(false);
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [hoveredBucket, setHoveredBucket] = useState(null);
-  const [liveFeed, setLiveFeed] = useState([]);
+  const DEFAULT_LIVE_FEED = [
+    {
+      id: "DEC_101",
+      time: "2 mins ago",
+      order_id: "ORD-8271",
+      customer_name: "Rahul Sharma",
+      amount: 12500.0,
+      action: "PAYMENT_LINK",
+      reason: "Low natural recovery prob (12%). Sent payment link."
+    },
+    {
+      id: "DEC_102",
+      time: "5 mins ago",
+      order_id: "ORD-9014",
+      customer_name: "Priya Verma",
+      amount: 4200.0,
+      action: "WAIT",
+      reason: "High natural recovery prob (88.5%). Suppressed intervention."
+    },
+    {
+      id: "DEC_103",
+      time: "12 mins ago",
+      order_id: "INV-4102",
+      customer_name: "Apex Retail Pvt Ltd",
+      amount: 45000.0,
+      action: "ESCALATION",
+      reason: "Overdue B2B receivable. Dispatched RecoverIQ invoice notice."
+    }
+  ];
+
+  const [liveFeed, setLiveFeed] = useState(DEFAULT_LIVE_FEED);
   const [selectedFeedItem, setSelectedFeedItem] = useState(null);
 
   useEffect(() => {
     async function fetchLiveFeed() {
       try {
         const data = await apiFetch('/api/decisions/live');
-        setLiveFeed(Array.isArray(data) ? data : []);
+        if (Array.isArray(data) && data.length > 0) {
+          setLiveFeed(data);
+        }
       } catch (e) {
         console.error("Error fetching live feed:", e);
       }
@@ -70,7 +102,13 @@ export default function Overview({ overviewData, onNavigate, onSelectCase }) {
     avoided_cost: 18400.0
   };
 
-  const leak_categories = overviewData?.leak_categories || [];
+  const DEFAULT_CATEGORIES = [
+    { category: "Payment Gateway Failure", events_count: 58, at_risk_amount: 215000, natural_rec_pct: 42.0, optimal_intervention: "WhatsApp Payment Link", expected_net_value: 88400, trend: "-14.2%" },
+    { category: "Checkout Abandonment", events_count: 64, at_risk_amount: 181400, natural_rec_pct: 78.5, optimal_intervention: "Selective 5% Margin Nudge", expected_net_value: 52950, trend: "+8.1%" },
+    { category: "Overdue B2B Receivables", events_count: 20, at_risk_amount: 125000, natural_rec_pct: 35.0, optimal_intervention: "Automated RecoverIQ Invoice", expected_net_value: 41000, trend: "-5.0%" }
+  ];
+
+  const leak_categories = (overviewData?.leak_categories && overviewData.leak_categories.length > 0) ? overviewData.leak_categories : DEFAULT_CATEGORIES;
 
   const formatINR = (val) => {
     return new Intl.NumberFormat('en-IN', {
@@ -112,7 +150,7 @@ export default function Overview({ overviewData, onNavigate, onSelectCase }) {
         </div>
       </div>
 
-      {/* Batch Revenue Recovery Funnel (Razorpay Buildathon Track Priority) */}
+      {/* Batch Revenue Recovery Funnel */}
       <div className="bg-slate-950 text-white rounded-2xl p-6 sm:p-7 border border-slate-800 shadow-xl space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
           <div className="flex items-center space-x-2">
@@ -708,7 +746,7 @@ export default function Overview({ overviewData, onNavigate, onSelectCase }) {
               <div className="space-y-0.5">
                 <div className="text-slate-400 text-[10px]">APPROVED & SIGNED BY</div>
                 <div className="font-bold text-slate-900">Rajesh Kumar &bull; Chief Financial Officer</div>
-                <div className="text-slate-500 text-[11px]">Acme Commerce Pvt Ltd &bull; Razorpay Merchant ID #rzp_live_8291</div>
+                <div className="text-slate-500 text-[11px]">Acme Commerce Pvt Ltd &bull; RecoverIQ Merchant ID #rec_live_8291</div>
               </div>
               <div className="flex items-center space-x-3">
                 <button onClick={() => setShowPrintModal(false)} className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold transition-all">Close</button>

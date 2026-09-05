@@ -39,7 +39,7 @@ export default function AuditTrail() {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'Razorpay_Audit_Report.csv';
+        a.download = 'RecoverIQ_Audit_Report.csv';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -70,7 +70,7 @@ export default function AuditTrail() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", "Razorpay_Audit_Report.csv");
+    link.setAttribute("download", "RecoverIQ_Audit_Report.csv");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -116,39 +116,60 @@ export default function AuditTrail() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-sans">
-              {(Array.isArray(logs) ? logs : []).map((log) => (
-                <tr key={log.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="p-3.5 text-slate-500 font-mono text-[11px]">{log.timestamp}</td>
-                  <td className="p-3.5 font-bold text-slate-900 font-mono text-xs">{log.entity_id}</td>
-                  <td className="p-3.5 font-semibold text-slate-900 text-xs">{log.customer_name}</td>
-                  <td className="p-3.5">
-                    <span className="bg-blue-50 text-blue-900 border border-blue-200 px-2.5 py-0.5 rounded-md text-[11px] font-bold font-mono inline-block">
-                      {log.action_taken.replace('_', ' ')}
-                    </span>
-                  </td>
-                  <td className="p-3.5 text-slate-700 max-w-xs text-[12px] leading-relaxed">
-                    {log.reason}
-                  </td>
-                  <td className="p-3.5 text-[12px]">
-                    <span className="text-emerald-700 font-bold">{log.policy_check}</span>
-                  </td>
-                  <td className="p-3.5 text-right font-extrabold text-sm text-emerald-700 num-tabular">
-                    +{formatINR(log.expected_net_value)}
-                  </td>
-                  <td className="p-3.5 text-center">
-                    <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-bold inline-block ${
-                      log.actual_outcome.includes('RECOVERED') ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-slate-100 text-slate-800 border border-slate-200'
-                    }`}>
-                      {log.actual_outcome}
-                    </span>
-                  </td>
-                  <td className="p-3.5 text-center">
-                    <span className="inline-flex items-center gap-1 text-emerald-700 text-[11px] font-extrabold font-mono">
-                      <ShieldCheck className="w-4 h-4 text-emerald-600" /> VERIFIED
-                    </span>
-                  </td>
-                </tr>
-              ))}
+              {(Array.isArray(logs) ? logs : []).map((log) => {
+                const isSystemGovernance = log.action_taken === 'GUARDRAIL_CLAMP' || log.event_type === 'Policy Enforcement' || (log.customer_name || '').includes('Governance');
+                return (
+                  <tr key={log.id} className={`transition-colors ${isSystemGovernance ? 'bg-amber-50/40 hover:bg-amber-50/70' : 'hover:bg-slate-50'}`}>
+                    <td className="p-3.5 text-slate-500 font-mono text-[11px]">{log.timestamp}</td>
+                    <td className="p-3.5 font-bold text-slate-900 font-mono text-xs">{log.entity_id}</td>
+                    <td className="p-3.5">
+                      {isSystemGovernance ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-slate-900 text-amber-300 border border-slate-800 text-[11px] font-mono font-bold shadow-2xs">
+                          <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                          <span>System Governance</span>
+                        </span>
+                      ) : (
+                        <span className="font-semibold text-slate-900 text-xs">{log.customer_name}</span>
+                      )}
+                    </td>
+                    <td className="p-3.5">
+                      <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-bold font-mono inline-block ${
+                        isSystemGovernance ? 'bg-amber-100 text-amber-950 border border-amber-300 font-extrabold' : 'bg-blue-50 text-blue-900 border border-blue-200'
+                      }`}>
+                        {log.action_taken.replace('_', ' ')}
+                      </span>
+                    </td>
+                    <td className="p-3.5 text-slate-700 max-w-xs text-[12px] leading-relaxed">
+                      {log.reason}
+                    </td>
+                    <td className="p-3.5 text-[12px]">
+                      <span className={isSystemGovernance ? 'text-amber-900 font-bold bg-amber-100/80 px-2 py-0.5 rounded border border-amber-300' : 'text-emerald-700 font-bold'}>
+                        {log.policy_check}
+                      </span>
+                    </td>
+                    <td className="p-3.5 text-right font-extrabold text-sm num-tabular">
+                      {isSystemGovernance ? (
+                        <span className="text-slate-400 text-xs font-mono">₹0</span>
+                      ) : (
+                        <span className="text-emerald-700">+{formatINR(log.expected_net_value)}</span>
+                      )}
+                    </td>
+                    <td className="p-3.5 text-center">
+                      <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-bold inline-block ${
+                        isSystemGovernance ? 'bg-amber-100 text-amber-950 border border-amber-300' :
+                        log.actual_outcome.includes('RECOVERED') ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-slate-100 text-slate-800 border border-slate-200'
+                      }`}>
+                        {log.actual_outcome}
+                      </span>
+                    </td>
+                    <td className="p-3.5 text-center">
+                      <span className="inline-flex items-center gap-1 text-emerald-700 text-[11px] font-extrabold font-mono">
+                        <ShieldCheck className="w-4 h-4 text-emerald-600" /> VERIFIED
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

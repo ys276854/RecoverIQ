@@ -96,7 +96,7 @@ export default function RevenueLeaks({ leaksData, onSelectCase }) {
           <p className="text-xs text-slate-600 font-sans mt-1">Investigate active leak events, examine baseline recovery, and execute actions</p>
         </div>
         <div className="text-xs text-slate-700 font-mono">
-          Showing <span className="font-bold text-slate-900">{filteredLeaks.length}</span> of {leaksData?.length || 0} Cases
+          Showing <span className="font-bold text-slate-900">{filteredLeaks.length}</span> of {rawLeaks.length} Cases
         </div>
       </div>
 

@@ -1,15 +1,13 @@
-# 📡 Razorpay Revenue Leak Radar
+# 📡 RecoverIQ — AI-powered revenue recovery intelligence
 
 > **Autonomous Merchant Revenue Intelligence & Algorithmic Recovery Engine**  
-> *Built for the Razorpay Hackathon*
 
 ---
 
 ## 🌐 Live Production Links
 
-- **Frontend SPA (Vercel)**: [https://frontend-eight-kohl-qac6wxkpdu.vercel.app](https://frontend-eight-kohl-qac6wxkpdu.vercel.app)
-- **Backend API (Render)**: [https://razorpay-revenue-leak-radar.onrender.com](https://razorpay-revenue-leak-radar.onrender.com)
-- **GitHub Repository**: [ys276854/razorpay-revenue-leak-radar](https://github.com/ys276854/razorpay-revenue-leak-radar)
+- **Frontend SPA**: [http://localhost:3000](http://localhost:3000)
+- **Backend API**: [http://localhost:8000](http://localhost:8000)
 
 ---
 
@@ -20,7 +18,7 @@ Standard recovery solutions rely on **blind, rule-based retries and mass notific
 2. **Cost Waste**: Spending notification fees on zero-probability or low-margin recovery cases.
 3. **Customer Fatigue**: Spamming high-LTV customers with excessive retries, driving brand churn.
 
-**Razorpay Revenue Leak Radar** replaces static rules with an **Expected Incremental Net Recovery Value ($EINRV$) Engine**:
+**RecoverIQ** replaces static rules with an **Expected Incremental Net Recovery Value ($EINRV$) Engine**:
 
 $$ EINRV(a, c) = V_{\text{order}} \times [P_{nat}(c) + \Delta P_a(c)] - \text{DirectCost}(a) - \text{MarginCost}(a) $$
 
@@ -52,12 +50,12 @@ cd frontend
 npm install
 npm run dev
 ```
-Frontend will run at: `http://localhost:5173`
+Frontend will run at: `http://localhost:3000`
 
 ---
 
-## 🛡️ Hackathon Security & Synthetic Data Disclosure
+## 🛡️ Security & Synthetic Data Disclosure
 
-- **API Keys**: All API keys used in default configurations are synthetic test keys (`rzp_test_mockkey12345`).
+- **API Keys**: All API keys used in default configurations are synthetic test keys.
 - **Customer & Transaction Data**: All customer profiles, emails, phone numbers, and order timelines are synthetic test data generated for demo evaluation.
-- **Evaluation Provenance**: Benchmark comparison metrics (e.g. +28.5% Net Recovery Lift) represent controlled offline counterfactual evaluation results backtested on held-out test sets from the Olist E-Commerce and Hillstrom RCT datasets; they are not claimed as live Razorpay production merchant volume.
+- **Evaluation Provenance**: Benchmark comparison metrics (e.g. +28.5% Net Recovery Lift) represent controlled offline counterfactual evaluation results backtested on held-out test sets from the Olist E-Commerce and Hillstrom RCT datasets.

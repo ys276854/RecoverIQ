@@ -16,6 +16,14 @@ export default function Onboarding({ user, onComplete }) {
   });
   const [loading, setLoading] = useState(false);
 
+  const handleNumberInput = (field, rawVal) => {
+    let cleanVal = String(rawVal).replace(/^0+(?=\d)/, '');
+    setFormData(prev => ({
+      ...prev,
+      [field]: cleanVal === '' ? '' : Number(cleanVal)
+    }));
+  };
+
   const handleNext = async () => {
     if (step < 3) {
       setStep(step + 1);
@@ -42,7 +50,7 @@ export default function Onboarding({ user, onComplete }) {
             <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-white text-xs">
               R
             </div>
-            <span className="font-extrabold text-sm font-mono tracking-tight text-white">RAZORPAY REVENUE LEAK RADAR</span>
+            <span className="font-extrabold text-sm font-mono tracking-tight text-white uppercase">RECOVERIQ — REVENUE RECOVERY ENGINE</span>
           </div>
           <div>
             <h1 className="text-xl font-bold text-white tracking-tight">Set up your Revenue Engine</h1>
@@ -139,7 +147,7 @@ export default function Onboarding({ user, onComplete }) {
                 <input
                   type="number"
                   value={formData.max_discount_amount}
-                  onChange={(e) => setFormData({ ...formData, max_discount_amount: Number(e.target.value) })}
+                  onChange={(e) => handleNumberInput('max_discount_amount', e.target.value)}
                   className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 font-mono"
                 />
               </div>
@@ -149,7 +157,7 @@ export default function Onboarding({ user, onComplete }) {
                 <input
                   type="number"
                   value={formData.max_intervention_cost}
-                  onChange={(e) => setFormData({ ...formData, max_intervention_cost: Number(e.target.value) })}
+                  onChange={(e) => handleNumberInput('max_intervention_cost', e.target.value)}
                   className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 font-mono"
                 />
               </div>
@@ -198,8 +206,8 @@ export default function Onboarding({ user, onComplete }) {
                   formData.data_connection === 'RAZORPAY_SANDBOX' ? 'border-blue-500 bg-blue-950/40' : 'border-slate-800 bg-slate-900'
                 }`}
               >
-                <div className="font-bold text-white">Razorpay Test Mode API</div>
-                <p className="text-slate-400 text-[11px] mt-1">Connect your Razorpay API Key ID (`rzp_test_...`) to listen to live payment failure webhooks.</p>
+                <div className="font-bold text-white">RecoverIQ Test Mode API</div>
+                <p className="text-slate-400 text-[11px] mt-1">Connect your API Key ID to listen to live payment failure webhooks.</p>
               </div>
             </div>
           </div>

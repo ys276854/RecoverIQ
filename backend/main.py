@@ -19,8 +19,8 @@ from razorpay_client import RazorpayClientIntegration
 from auth import AUTH, LoginRequest, SignupRequest, OnboardingRequest
 
 app = FastAPI(
-    title="Razorpay Revenue Leak Radar Backend",
-    description="Merchant Revenue Intelligence & Recovery Engine",
+    title="RecoverIQ Backend",
+    description="RecoverIQ — AI-powered revenue recovery intelligence",
     version="1.0.0"
 )
 
@@ -284,7 +284,7 @@ def get_overview_data():
                 "events_count": len([e for e in EVENTS_DB if e["category"] == "PAYMENT_FAILURE"]),
                 "at_risk_amount": sum(e["amount"] for e in EVENTS_DB if e["category"] == "PAYMENT_FAILURE"),
                 "natural_rec_pct": 41.2,
-                "optimal_intervention": "Razorpay Payment Link",
+                "optimal_intervention": "RecoverIQ Payment Link",
                 "expected_net_value": round(net_val_total * 0.6, 2),
                 "trend": "-4.1%"
             },
@@ -378,7 +378,7 @@ def get_case_detail(event_id: str):
 
 @app.post("/api/action/execute")
 def execute_action(payload: Dict[str, Any] = Body(...)):
-    """Executes optimal recovery action, firing Razorpay API calls when needed."""
+    """Executes optimal recovery action, firing RecoverIQ API calls when needed."""
     event_id = payload.get("event_id")
     action = payload.get("action")
 
@@ -410,6 +410,12 @@ def execute_action(payload: Dict[str, Any] = Body(...)):
     else:
         ev["status"] = "RECOVERED"
 
+    p_nat = eval_res.natural_recovery_prob
+    delta_act = ENGINE.estimate_treatment_uplift(action, p_nat, ev)
+    executed_rationale = ENGINE.generate_action_rationale(
+        action, ev, p_nat, delta_act, ev["amount"], eval_res.incremental_value_over_wait
+    )
+
     audit_entry = {
         "id": f"AUDIT_{random.randint(200, 999)}",
         "timestamp": datetime.now().strftime("%H:%M:%S"),
@@ -417,7 +423,7 @@ def execute_action(payload: Dict[str, Any] = Body(...)):
         "entity_id": f"#{ev['order_id']}",
         "customer_name": ev["customer_name"],
         "action_taken": action,
-        "reason": eval_res.rationale,
+        "reason": executed_rationale,
         "policy_check": "PASSED (Merchant Guardrails Enforced)",
         "expected_net_value": eval_res.expected_net_value,
         "actual_outcome": "RECOVERED" if ev["status"] == "RECOVERED" else "MONITORING",
@@ -457,7 +463,7 @@ def get_customer_profile(customer_id: str):
         {"timestamp": (now - timedelta(minutes=45)).strftime("%I:%M:%S %p"), "event": "Checkout Session Started", "details": f"Cart total ₹{sample_cust['amount']:,.2f}", "status": "INFO"},
         {"timestamp": (now - timedelta(minutes=44)).strftime("%I:%M:%S %p"), "event": "Payment Attempt #1 Failed", "details": f"Method: {sample_cust['payment_method']} | Reason: {sample_cust['failure_reason']}", "status": "FAILURE"},
         {"timestamp": (now - timedelta(minutes=43)).strftime("%I:%M:%S %p"), "event": "Radar Evaluated Natural Recovery", "details": f"P_nat = {ENGINE.estimate_natural_recovery(sample_cust)*100:.1f}%. Optimal Action: PAYMENT_LINK", "status": "ENGINE"},
-        {"timestamp": (now - timedelta(minutes=42)).strftime("%I:%M:%S %p"), "event": "Razorpay Payment Link Created", "details": f"Dispatched to {sample_cust['customer_phone']} via WhatsApp", "status": "ACTION"},
+        {"timestamp": (now - timedelta(minutes=42)).strftime("%I:%M:%S %p"), "event": "RecoverIQ Payment Link Created", "details": f"Dispatched to {sample_cust['customer_phone']} via WhatsApp", "status": "ACTION"},
         {"timestamp": (now - timedelta(minutes=15)).strftime("%I:%M:%S %p"), "event": "Payment Link Opened by Customer", "details": "User clicked rzp.io short link via mobile", "status": "VIEWED"},
         {"timestamp": (now - timedelta(minutes=14)).strftime("%I:%M:%S %p"), "event": "Payment Success via UPI (GPay)", "details": f"Recovered ₹{sample_cust['amount']:,.2f} | Ref: #pay_992183", "status": "SUCCESS"}
     ]
@@ -486,7 +492,7 @@ def get_experiments():
         "experiment_name": "A/B Policy Test: Static Retries vs Radar EINRV",
         "status": "RUNNING (50/50 Cohort Split)",
         "duration": "14 Days",
-        "provenance_statement": "Controlled offline counterfactual evaluation backtested on held-out test sets from Olist E-Commerce and Hillstrom RCT datasets; not claimed as live Razorpay production merchant data.",
+        "provenance_statement": "Controlled offline counterfactual evaluation backtested on held-out test sets from Olist E-Commerce and Hillstrom RCT datasets; not claimed as live merchant production data.",
         "metrics": {
             "control": {
                 "policy_name": "Static Retries & 10% Discount",
@@ -654,30 +660,74 @@ def export_audit_csv():
     
     csv_content = "\n".join(lines)
     return PlainTextResponse(content=csv_content, media_type="text/csv", headers={
-        "Content-Disposition": "attachment; filename=Razorpay_Audit_Report.csv"
+        "Content-Disposition": "attachment; filename=RecoverIQ_Audit_Report.csv"
     })
 
 # Dynamic Guardrails Update Endpoint
 class GuardrailUpdateModel(BaseModel):
-    max_discount_pct: Optional[float] = None
+    max_discount_amount: Optional[float] = None
+    max_intervention_cost: Optional[float] = None
     max_discount_cap: Optional[float] = None
     max_outbound_touches: Optional[int] = None
-    min_einrv_threshold: Optional[float] = None
-    quiet_hours_enabled: Optional[bool] = None
+    daily_budget_cap: Optional[float] = None
 
 @app.post("/api/guardrails/update")
 def update_guardrails_partial(payload: GuardrailUpdateModel):
-    """Updates active merchant guardrail policies in memory."""
+    """Updates active merchant guardrail policies in memory and logs safety overrides to Audit Trail."""
     global GUARDRAILS, ENGINE
-    if payload.max_discount_cap is not None:
-        GUARDRAILS.max_discount_amount = payload.max_discount_cap
+    clamped_reasons = []
+
+    if payload.max_discount_amount is not None or payload.max_discount_cap is not None:
+        requested_disc = float(payload.max_discount_amount if payload.max_discount_amount is not None else payload.max_discount_cap)
+        if requested_disc > 5000.0:
+            clamped_reasons.append(f"Discount cap requested ₹{requested_disc:,.0f} clamped to safety ceiling ₹5,000")
+            GUARDRAILS.max_discount_amount = 5000.0
+        else:
+            GUARDRAILS.max_discount_amount = requested_disc
+
+    if payload.max_intervention_cost is not None:
+        requested_cost = float(payload.max_intervention_cost)
+        if requested_cost > 150.0:
+            clamped_reasons.append(f"Intervention cost requested ₹{requested_cost:,.0f} clamped to safety ceiling ₹150")
+            GUARDRAILS.max_intervention_cost = 150.0
+        else:
+            GUARDRAILS.max_intervention_cost = requested_cost
+
     if payload.max_outbound_touches is not None:
         GUARDRAILS.max_touches_per_48h = payload.max_outbound_touches
+
+    if payload.daily_budget_cap is not None:
+        GUARDRAILS.daily_budget_cap = payload.daily_budget_cap
+
+    clamp_audit = None
+    if clamped_reasons:
+        clamp_audit = {
+            "id": f"AUDIT_CLAMP_{random.randint(100, 999)}",
+            "timestamp": datetime.now().strftime("%H:%M:%S"),
+            "event_type": "Policy Enforcement",
+            "entity_id": "#GUARDRAIL_CONFIG",
+            "customer_name": "Merchant System Governance",
+            "action_taken": "GUARDRAIL_CLAMP",
+            "reason": "System Governance Safety Override: " + "; ".join(clamped_reasons) + ". Preserved merchant unit economics from out-of-bounds input drift.",
+            "policy_check": "CLAMPED & AUDITED (Max Cap Enforced)",
+            "expected_net_value": 0.0,
+            "actual_outcome": "POLICY_OVERRIDE_LOGGED",
+            "actual_recovered_amount": 0.0,
+            "intervention_cost": 0.0,
+            "status": "VERIFIED"
+        }
+        AUDIT_LOGS_DB.insert(0, clamp_audit)
+
     ENGINE = RevenueLeakEngine(GUARDRAILS)
-    return {"success": True, "message": "Guardrail policies updated successfully", "guardrails": GUARDRAILS}
+    return {
+        "success": True,
+        "message": "Guardrail policies updated successfully",
+        "guardrails": GUARDRAILS,
+        "clamp_audit": clamp_audit
+    }
 
 
-# Webhook Simulator Endpoint (Razorpay payment.failed payload)
+# Webhook Simulator Endpoint (RecoverIQ payment.failed payload)
 class WebhookPayloadModel(BaseModel):
     event: Optional[str] = "payment.failed"
     amount: Optional[float] = 16500.0
@@ -686,7 +736,7 @@ class WebhookPayloadModel(BaseModel):
 
 @app.post("/api/webhook/simulate")
 def simulate_webhook(payload: WebhookPayloadModel):
-    """Simulates an incoming Razorpay payment.failed webhook event."""
+    """Simulates an incoming RecoverIQ payment.failed webhook event."""
     new_id = f"LEAK_{random.randint(9000, 9999)}"
     new_ev = {
         "id": new_id,
@@ -698,7 +748,7 @@ def simulate_webhook(payload: WebhookPayloadModel):
         "amount": payload.amount or 16500.0,
         "category": "PAYMENT_FAILURE",
         "payment_method": payload.payment_method or "UPI",
-        "failure_reason": "Razorpay Webhook: Bank Authorization Timeout",
+        "failure_reason": "RecoverIQ Webhook: Bank Authorization Timeout",
         "attempt_count": 1,
         "timestamp": datetime.now().isoformat(),
         "age_minutes": 1,
