@@ -1,3 +1,5 @@
+# RecoverIQ — AI-powered revenue recovery intelligence
+
 # Dependencies
 node_modules/
 frontend/node_modules/
@@ -25,3 +27,4 @@ Thumbs.db
 # Environment variables
 .env
 .env.local
+.env.*
