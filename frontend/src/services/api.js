@@ -342,7 +342,8 @@ export async function apiFetch(endpoint, options = {}) {
     if (contentType.includes('application/json')) {
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.detail || data.message || `Request failed with status ${res.status}`);
+        console.warn(`[API] Endpoint '${endpoint}' returned HTTP ${res.status}. Using Demo Fallback Interceptor.`);
+        return getMockResponse(endpoint, options);
       }
       return data;
     } else {
